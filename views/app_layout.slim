@@ -4,7 +4,6 @@ html lang="en"
     meta content=("text/html; charset=UTF-8") http-equiv="Content-Type"
     meta content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" name="viewport"
     title GeoDiver
-    link type="text/css" rel="stylesheet"  href="#{uri('assets/css/style.min.css')}" 
     css:
       @font-face { font-family: 'Material Icons'; font-style: normal; font-weight: 400; src: local('Material Icons'), local('MaterialIcons-Regular'), url(https://fonts.gstatic.com/s/materialicons/v11/2fcrYFNaTjcS6g4U3t-Y5RV6cRhDpPC5P4GCEJpqGoc.woff) format('woff');}
       .material-icons { font-family: 'Material Icons'; font-weight: normal; font-style: normal; font-size: 24px; line-height: 1; letter-spacing: normal; text-transform: none; display: inline-block; white-space: nowrap; word-wrap: normal; direction: ltr; text-rendering: optimizeLegibility; webkit-font-smoothing:  }
@@ -111,7 +110,7 @@ html lang="en"
     script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"
     script src="https://cdn.plot.ly/plotly-latest.min.js" 
     script src="//cdn.datatables.net/1.10.10/js/jquery.dataTables.js"
-    script src="#{uri('assets/js/geodiver_0_0_1.min.js')}"
+    script src="#{uri('assets/js/geodiver-' + GeoDiver::VERSION + '.min.js')}"
     - if request.path_info =~ %r{^/result/} || request.path_info =~ %r{^/sh/} || request.path_info =~ %r{^/my_results}
       javascript:
         $( document ).ready(function() {
