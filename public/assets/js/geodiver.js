@@ -86,6 +86,13 @@ if (!GD) {
     });
   };
 
+  GD.exemplar_results = function() {
+    $('#exemplar_result').click(function(){
+      $('input[name=geo_db]').val('GDS5093');
+      $('#load_geo_db').submit();
+    });
+  };
+
   GD.analyseValidation = function() {
     'use strict';
     $('#analyse').validate({
@@ -630,6 +637,7 @@ if (!GD) {
     $('select').material_select();
     GD.setUpValidatorDefaults();
     GD.loadGeoDbValidation();
+    GD.exemplar_results();
     GD.addUserDropDown();
   });
 })(jQuery);
