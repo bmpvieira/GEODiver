@@ -92,11 +92,13 @@ module GeoDiver
       FileUtils.mkdir_p @db_dir unless Dir.exist? @db_dir
     end
 
-    # Create the public dir, if already created and in development environment,
-    # remove the existing assets and copy over the new assets
+    # Create the public dir, if already created and the right CSS/JS version do
+    # not exist then remove the existing assets and copy over the new assets
     def create_public_dir
       public_dir = File.join(config[:gd_public_dir], 'public')
-      if Dir.exist?(public_dir) && verbose?
+      if Dir.exist?(public_dir) &&
+         ! File.exist?(File.join(public_dir, 'assets/css',
+                                 "style-#{GeoDiver::VERSION}.min.css"))
         FileUtils.rm_r File.join(public_dir, 'assets')
         FileUtils.cp_r(File.join(GeoDiver.root, 'public/assets'), public_dir)
       else
