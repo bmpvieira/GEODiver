@@ -24,3 +24,9 @@ task test: :spec
 RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = FileList['spec/**/*_spec.rb']
 end
+
+task :assets do
+  require_relative 'lib/geodiver/version'
+  sh "cleancss --s0 -s --skip-rebase -o './public/assets/css/style-#{GeoDiver::VERSION}.min.css' './public/assets/css/style.css'"
+  sh "uglifyjs './public/assets/js/geodiver.js' './public/assets/js/datatable-materialize.js' './public/assets/js/jquery.filedownload.min.js' -m -c -o './public/assets/js/geodiver-#{GeoDiver::VERSION}.min.js'"
+end
