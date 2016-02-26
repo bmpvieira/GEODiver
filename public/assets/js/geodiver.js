@@ -633,7 +633,6 @@ if (!GD) {
 
   $(function() {
     $('.button-collapse').sideNav();
-    $('.parallax').parallax();
     $('select').material_select();
     GD.setUpValidatorDefaults();
     GD.loadGeoDbValidation();
