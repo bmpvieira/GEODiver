@@ -634,9 +634,11 @@ if (!GD) {
   $(function() {
     $('.button-collapse').sideNav();
     $('select').material_select();
-    GD.setUpValidatorDefaults();
-    GD.loadGeoDbValidation();
-    GD.exemplar_results();
+    if ($('#load_geo_db').length) {
+      GD.setUpValidatorDefaults();
+      GD.loadGeoDbValidation();
+    }
+    if ($('#exemplar_result').length) { GD.exemplar_results(); }
     GD.addUserDropDown();
   });
 })(jQuery);
