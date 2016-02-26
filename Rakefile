@@ -30,7 +30,6 @@ task :assets do
   `rm ./public/assets/css/style-*.min.css`
   `rm ./public/assets/css/home-*.min.css`
   `rm ./public/assets/css/app-*.min.css`
-  `rm ./public/assets/js/load_css-*.min.js`
   `rm ./public/assets/js/geodiver-*.min.js`
   sh 'cleancss --s0 -s --skip-rebase -o' \
      " './public/assets/css/style-#{GeoDiver::VERSION}.min.css'" \
@@ -45,6 +44,4 @@ task :assets do
      " './public/assets/js/jquery.filedownload.min.js'" \
      " './public/assets/js/geodiver.js' -m -c -o" \
      " './public/assets/js/geodiver-#{GeoDiver::VERSION}.min.js'"
-  sh "uglifyjs './public/assets/js/load_css.js' -m -c -o" \
-     " './public/assets/js/load_css-#{GeoDiver::VERSION}.min.js'"
 end
