@@ -32,10 +32,19 @@ task :assets do
   `rm ./public/assets/css/app-*.min.css`
   `rm ./public/assets/js/load_css-*.min.js`
   `rm ./public/assets/js/geodiver-*.min.js`
-  sh "cleancss --s0 -s --skip-rebase -o './public/assets/css/style-#{GeoDiver::VERSION}.min.css' './public/assets/css/style.css'"
-  sh "cleancss --s0 -s --skip-rebase -o './public/assets/css/home-#{GeoDiver::VERSION}.min.css' './public/assets/css/home.css'"
-  sh "cleancss --s0 -s --skip-rebase -o './public/assets/css/app-#{GeoDiver::VERSION}.min.css' './public/assets/css/app.css'"
-  sh "uglifyjs './public/assets/js/geodiver.js' './public/assets/js/datatable-materialize.js' './public/assets/js/jquery.filedownload.min.js' -m -c -o './public/assets/js/geodiver-#{GeoDiver::VERSION}.min.js'"
-  sh "uglifyjs './public/assets/js/load_css.js' -m -c -o './public/assets/js/load_css-#{GeoDiver::VERSION}.min.js'"
-
+  sh 'cleancss --s0 -s --skip-rebase -o' \
+     " './public/assets/css/style-#{GeoDiver::VERSION}.min.css'" \
+     " './public/assets/css/style.css'"
+  sh 'cleancss --s0 -s --skip-rebase -o' \
+     " './public/assets/css/home-#{GeoDiver::VERSION}.min.css'" \
+     " './public/assets/css/home.css'"
+  sh 'cleancss --s0 -s --skip-rebase -o' \
+     " './public/assets/css/app-#{GeoDiver::VERSION}.min.css'" \
+     " './public/assets/css/app.css'"
+  sh "uglifyjs './public/assets/js/datatable-materialize.js'" \
+     " './public/assets/js/jquery.filedownload.min.js'" \
+     " './public/assets/js/geodiver.js' -m -c -o" \
+     " './public/assets/js/geodiver-#{GeoDiver::VERSION}.min.js'"
+  sh "uglifyjs './public/assets/js/load_css.js' -m -c -o" \
+     " './public/assets/js/load_css-#{GeoDiver::VERSION}.min.js'"
 end
