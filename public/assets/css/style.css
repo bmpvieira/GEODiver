@@ -576,3 +576,32 @@ opacity: 0.8;
 .modebar-btn {
   margin-right:0;
 }
+
+#analyse_geo_btn {
+  width: 100%;
+  float: none;
+  margin-bottom: 1rem;
+}
+
+#adv_params_btn {
+  float: none;
+  width: 100%;
+}
+
+.adv_param_collapsible {
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 600px) {
+  .adv_param_collapsible {
+    margin-bottom: -60px;
+  }
+  #adv_params_btn {
+    float: left;
+    width: initial;
+  }
+  #analyse_geo_btn {
+    float: right;
+    width: initial;
+  }
+}
