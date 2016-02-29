@@ -592,6 +592,11 @@ opacity: 0.8;
   margin-bottom: 1rem;
 }
 
+.load_geo_db_btn {
+  float: none;
+  width: 100%;
+}
+
 @media (min-width: 600px) {
   .adv_param_collapsible {
     margin-bottom: -60px;
@@ -604,4 +609,9 @@ opacity: 0.8;
     float: right;
     width: initial;
   }
+  .load_geo_db_btn {
+    float: right;
+    width: initial; 
+  }
+
 }
