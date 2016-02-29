@@ -18,7 +18,9 @@ html lang="en"
       .nav-wrapper
         span.hide-on-med-and-down.logo
           img height="64" src="#{uri('assets/img/logo.min.svg')}" alt="GeoDiver Logo"
-        a#logo-container.brand-logo.white-text href="#{request.base_url}"
+          a#logo-container.brand-logo.white-text href="#{request.base_url}"
+            | &nbsp;GeoDiver
+        a#logo-container.brand-logo.white-text.hide-on-large-only href="#{request.base_url}"
           | &nbsp;GeoDiver
         ul.hide-on-med-and-down.navbar_centered
           - if uri =~ %r{/analyse}
@@ -36,7 +38,7 @@ html lang="en"
               a.white-text href="/analyse"  Analyse               
             li
               a.white-text href="/my_results"  My Results 
-        ul.right.hide-on-med-and-down
+        ul.right.hide-on-med-and-down style="position:absolute;top:0 !important;right:0;"
           - if ! session[:user].nil?
             li.user data-user="#{Base64.encode64(session[:user].info['email']).chomp}"
               a.white-text.dropdown-button href="#!" data-activates="dropdown" data-beloworigin="true"
