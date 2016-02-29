@@ -204,7 +204,7 @@ if (!GD) {
       rules: {},
       submitHandler: function(form, event) {
         // Manually check if groupa / groupb is empty
-        if ( $.isEmptyObject( $('select[name="PC3doption1[]"]').val() )  || $.isEmptyObject( $('select[name="PC3doption2[]"]').val() ) || $.isEmptyObject( $('select[name="PC3doption3[]"]').val() ) ) {
+        if ( $.isEmptyObject( $('select[name="PC3doption1"]').val() ) || $.isEmptyObject( $('select[name="PC3doption2"]').val() ) || $.isEmptyObject( $('select[name="PC3doption3"]').val() ) ) {
           $('.select_pc3_validations').text('Please select the Principle components to analyse.');
           return false;
         }
@@ -224,7 +224,7 @@ if (!GD) {
       rules: {},
       submitHandler: function(form, event) {
         // Manually check if groupa / groupb is empty
-        if ( $.isEmptyObject( $('select[name="PC2doption1[]"]').val() )  || $.isEmptyObject( $('select[name="PC2doption2[]"]').val() ) ) {
+        if ( $.isEmptyObject( $('select[name="PC2doption1"]').val() )  || $.isEmptyObject( $('select[name="PC2doption2"]').val() ) ) {
           $('.select_pc2_validations').text('Please select the Principle components to analyse.');
           return false;
         }        
