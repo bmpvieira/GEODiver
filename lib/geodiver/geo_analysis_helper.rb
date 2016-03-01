@@ -82,8 +82,8 @@ module GeoDiver
       end
 
       def interaction_cmd(run_dir, params)
-        "Rscript #{File.join(GeoDiver.root, 'RCore/gage_interaction.R')}" \
-        " --rundir '#{run_dir}/' --pathid '#{params[:path_id]}'"
+        path = File.join(GeoDiver.root, 'RCore/gage_interaction_networks.R')
+        "Rscript #{path} --rundir '#{run_dir}/' --pathid '#{params[:path_id]}'"
       end
 
       def remove_unwanted_files(run_dir, params)
