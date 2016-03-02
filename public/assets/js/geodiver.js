@@ -286,7 +286,7 @@ if (!GD) {
     group1 = { x: pcdata[ x + '.Group1'], y: pcdata[y + '.Group1'], text: pcdata.Group1, type: 'scatter', mode: 'markers', name: 'Group1', marker: { symbol: 'circle' } };
     group2 = { x: pcdata[ x + '.Group2'], y: pcdata[y + '.Group2'], text: pcdata.Group2, type: 'scatter', mode: 'markers', name: 'Group2', marker: { symbol: 'square' } };
     data = [group1, group2];
-    layout = { xaxis: { title: x }, yaxis: { title: y }};
+    layout = { xaxis: { title: x }, yaxis: { title: y }, hovermode: 'closest' };
 
     parentWidth = 100;
     PCAplotGd3 = Plotly.d3.select('#pca2d_plot')
@@ -302,7 +302,7 @@ if (!GD) {
     group1 = { x: pcdata[ x + '.Group1'], y: pcdata[y + '.Group1'], z: pcdata[ z + '.Group1'], text: pcdata.Group1, type: 'scatter3d', mode: 'markers', name: 'Group1', marker: { symbol: 'circle' } };
     group2 = { x: pcdata[ x + '.Group2'], y: pcdata[y + '.Group2'], z: pcdata[ z + '.Group2'], text: pcdata.Group2, type: 'scatter3d', mode: 'markers', name: 'Group2', marker: { symbol: 'square' } };
     data = [group1, group2];
-    layout = { scene: {xaxis: { title: x }, yaxis: { title: y }, zaxis: {title: z} } };
+    layout = { scene: {xaxis: { title: x }, yaxis: { title: y }, zaxis: {title: z} }, hovermode: 'closest' };
 
     parentWidth = 100;
     PCAplotGd3 = Plotly.d3.select('#pca3d_plot')
