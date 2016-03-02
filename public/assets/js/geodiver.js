@@ -194,7 +194,7 @@ if (!GD) {
     } else {
       errorMessage = e.responseText;
       $('#results_section').show();
-      $('#results_section').html('There seems to be an unidentified Error.');
+      $('#results_section').html('<div class="card red lighten-2" role="alert"><div class="card-content white-text"><h3>Oops! GeoDiver is Drowning!</h3><p style="font-size: 1.5rem"><strong>Apologies, there was an error with your request. Please try again.</strong></p><p>Error Message:' + ' The server responded with the status code: ' + String(e.status) + '. Please refresh the page and try again.</p><p>If the error persists, please contact the administrator.</p></div></div>');
       $('#loading_modal').closeModal(); // remove progress notification
     }
   };
