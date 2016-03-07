@@ -15,7 +15,7 @@
             | #{factor.split(/[.\s]/).map(&:capitalize).join(' ')}
     br
     .input-field.col.s12
-      span.light-blue-text.text-darken-3.heading2 Compare two sets of samples
+      span.light-blue-text.text-darken-3.heading2 Select the two sets of samples to compare.
     .row
       - @geo_db_results['Factors'].each do |factor, phenotypes|
         .select_factors id="#{factor.gsub(/[\/\\\.\:\#\s]/, '_')}_select" style="display:none;"
