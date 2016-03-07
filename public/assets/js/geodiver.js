@@ -235,7 +235,7 @@ if (!GD) {
         var y = $('select[name=PC2doption2]').val();
         var jsonFile = $('#overview').data("overview-json");
         $.getJSON(jsonFile, function(json) {
-          GD.create3dPCAScatterPlot(json.pcdata, x, y, z);
+          GD.create2dPCAScatterPlot(json.pcdata, x, y);
         });
       }
     });
