@@ -93,21 +93,29 @@ module GeoDiver
       end
 
       def run_analysis
-        p = Pool.new(config[:num_threads]) if config[:num_threads] > 1
         if config[:num_threads] > 1
-          p.schedule { run_overview }
-          p.schedule { run_dgea } if @params['dgea'] == 'on'
-          p.schedule { run_gage } if @params['gsea'] == 'on'
+          run_r_core_multi_thread
         else
-          run_overview
-          run_dgea if @params['dgea'] == 'on'
-          run_gage if @params['gsea'] == 'on'
+          run_r_core_single_thread
         end
         assert_overview_output
         assert_dgea_output if @params['dgea'] == 'on'
         assert_gsea_output if @params['gsea'] == 'on'
+      end
+
+      def run_r_core_multi_thread
+        p = Pool.new(config[:num_threads])
+        p.schedule { run_overview }
+        p.schedule { run_dgea } if @params['dgea'] == 'on'
+        p.schedule { run_gage } if @params['gsea'] == 'on'
       ensure
-        p.shutdown if config[:num_threads] > 1
+        p.shutdown
+      end
+
+      def run_r_core_single_thread
+        run_overview
+        run_dgea if @params['dgea'] == 'on'
+        run_gage if @params['gsea'] == 'on'
       end
 
       def run_overview

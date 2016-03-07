@@ -45,7 +45,7 @@ module GeoDiver
         meta_data
       end
 
-      def convert_geodb_into_RData(geo_accession)
+      def convert_geodb_into_rdata(geo_accession)
         geo_accession = geo_accession.upcase
         return if File.exist?(File.join(db_dir, geo_accession,
                                         "#{geo_accession}.RData"))
@@ -79,6 +79,8 @@ module GeoDiver
         file = download_geo_file(geo_accession)
         data = read_geo_file(file)
         parse_geo_db(data)
+      rescue
+        raise ArgumentError, 'GeoDiver was unable to download the GEO Database'
       end
 
       #
@@ -88,8 +90,7 @@ module GeoDiver
         FileUtils.mkdir(output_dir) unless Dir.exist? output_dir
         compressed = File.join(output_dir, "#{geo_accession}.soft.gz")
         logger.debug("Downloading from: #{remote_dir} ==> #{compressed}")
-        system "wget #{remote_dir} --output-document #{compressed}" \
-               ' >/dev/null 2>&1'
+        `wget #{remote_dir} --output-document #{compressed}`
         logger.debug("Uncompressing file: #{compressed.gsub('.gz', '')}")
         system "gunzip --force -c #{compressed} > #{compressed.gsub('.gz', '')}"
         compressed.gsub('.gz', '')
@@ -121,15 +122,15 @@ module GeoDiver
       end
 
       #
-      def parse_geo_db(data)
+      def parse_geo_db(d)
         {
-          'Accession' => data.match(/\^DATASET = (.*)/)[1],
-          'Title' => data.match(/!dataset_title = (.*)/)[1],
-          'Description' => data.match(/!dataset_description = (.*)/)[1],
-          'Sample_Organism' => data.match(/!dataset_platform_organism = (.*)/)[1],
-          'Factors' => parse_factors(data),
-          'Reference' => data.match(/!Database_ref = (.*)/)[1],
-          'Update_Date' => data.match(/!dataset_update_date = (.*)/)[1]
+          'Accession' => d.match(/\^DATASET = (.*)/)[1],
+          'Title' => d.match(/!dataset_title = (.*)/)[1],
+          'Description' => d.match(/!dataset_description = (.*)/)[1],
+          'Sample_Organism' => d.match(/!dataset_platform_organism = (.*)/)[1],
+          'Factors' => parse_factors(d),
+          'Reference' => d.match(/!Database_ref = (.*)/)[1],
+          'Update_Date' => d.match(/!dataset_update_date = (.*)/)[1]
         }
       end
 
@@ -140,7 +141,6 @@ module GeoDiver
         subsets.lines.each_slice(5) do |subset|
           desc = subset[2].match(/\!subset_description = (.*)/)[1]
           type = subset[4].match(/\!subset_type = (.*)/)[1].gsub(' ', '.')
-          # samples = subset[3].match(/\!subset_sample_id = (.*)/)[1]
           results[type] ||= []
           results[type] << desc
         end

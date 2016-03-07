@@ -106,7 +106,7 @@ module GeoDiver
       redirect to('auth/google_oauth2') if session[:user].nil?
       @geo_db_results = LoadGeoData.run(params)
       # Convert the GeoDb into RData in the background if necessary
-      session[:geodb] = LoadGeoData.convert_geodb_into_RData(params['geo_db'])
+      session[:geodb] = LoadGeoData.convert_geodb_into_rdata(params['geo_db'])
       slim :load_db, layout: false
     end
 
