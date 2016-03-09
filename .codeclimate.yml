@@ -1,9 +1,3 @@
 exclude_paths:
-- public/assets/css/style.min
 - public/assets/js/datatable-materialize.js
 - public/assets/js/jquery.filedownload.min.js
-- public/assets/js/datatable-materialize.min.js
-- public/assets/js/geodiver.min.js
-- public/assets/js/geodiver_c.js
-- public/assets/js/geodiver_c.min.js
-
