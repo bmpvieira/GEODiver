@@ -21,14 +21,15 @@ module GeoDiver
           next unless accession.to_s =~ /^GDS/
           (user_dir + accession).children(with_directory = false).each do |time|
             next unless time.to_s.length == 33
-            data << generate_data_hash(user_dir, accession, time)
+            json_file = user_dir + accession + time + 'params.json'
+            next unless File.exist? json_file
+            data << generate_data_hash(json_file, user_dir, accession, time)
           end
         end
         data.sort_by { |d| d['run_time'] }.reverse
       end
 
-      def generate_data_hash(user_dir, accession, time)
-        json_file = user_dir + accession + time + 'params.json'
+      def generate_data_hash(json_file, user_dir, accession, time)
         data = JSON.parse(IO.read(json_file.to_s))
         data['run_time'] = Time.strptime(data['uniq_result_id'],
                                          '%Y-%m-%d_%H-%M-%S_%L-%N')
