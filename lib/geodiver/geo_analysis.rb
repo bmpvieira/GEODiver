@@ -138,9 +138,9 @@ module GeoDiver
         "Rscript #{File.join(GeoDiver.root, 'RCore/overview.R')}" \
         " --dbrdata #{dbrdata} --rundir '#{@run_dir}/'" \
         " --analyse 'Boxplot,PCA'" \
-        " --accession #{@params['geo_db']} --factor '#{@params['factor']}'" \
-        " --popA '#{@params['groupa'].join(',')}'" \
-        " --popB '#{@params['groupb'].join(',')}'" \
+        " --accession #{@params['geo_db']} --factor \"#{@params['factor']}\"" \
+        " --popA \"#{to_comma_delimited_string(@params['groupa'])}\"" \
+        " --popB \"#{to_comma_delimited_string(@params['groupb'])}\"" \
         " --popname1 'Group1' --popname2 'Group2'" \
         ' --dev TRUE'
       end
@@ -150,9 +150,9 @@ module GeoDiver
         "Rscript #{File.join(GeoDiver.root, 'RCore/dgea.R')}" \
         " --dbrdata #{dbrdata} --rundir '#{@run_dir}/'" \
         " --analyse '#{analyses_to_carry_out.join(',')}'" \
-        " --accession #{@params['geo_db']} --factor '#{@params['factor']}'" \
-        " --popA '#{@params['groupa'].join(',')}'" \
-        " --popB '#{@params['groupb'].join(',')}'" \
+        " --accession #{@params['geo_db']} --factor \"#{@params['factor']}\"" \
+        " --popA \"#{to_comma_delimited_string(@params['groupa'])}\"" \
+        " --popB \"#{to_comma_delimited_string(@params['groupb'])}\"" \
         " --popname1 'Group1' --popname2 'Group2'" \
         " --topgenecount #{@params['dgea_number_top_genes']} " \
         ' --foldchange 0 --thresholdvalue 0' \
@@ -169,9 +169,9 @@ module GeoDiver
       def gsea_cmd
         "Rscript #{File.join(GeoDiver.root, 'RCore/gage.R')}" \
         " --dbrdata #{dbrdata} --rundir '#{@run_dir}/'" \
-        " --accession #{@params['geo_db']} --factor '#{@params['factor']}'" \
-        " --popA '#{@params['groupa'].join(',')}'" \
-        " --popB '#{@params['groupb'].join(',')}'" \
+        " --accession #{@params['geo_db']} --factor \"#{@params['factor']}\"" \
+        " --popA \"#{to_comma_delimited_string(@params['groupa'])}\"" \
+        " --popB \"#{to_comma_delimited_string(@params['groupb'])}\"" \
         " --comparisontype '#{@params['gsea_type']}'"\
         " --genesettype '#{@params['gsea_dataset']}'" \
         " --distance '#{@params['gsea_heatmap_distance_method']}'" \
@@ -197,6 +197,11 @@ module GeoDiver
         end
         analyses << 'Volcano' if @params['dgea_volcano'] == 'on'
         analyses
+      end
+
+      def to_comma_delimited_string(arr)
+        arr.each { |e| e.gsub!(/(?<!\\),/, '\,') }
+        arr.join(',')
       end
 
       def dgea_clusterby_method
