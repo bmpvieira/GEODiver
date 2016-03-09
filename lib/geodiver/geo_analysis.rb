@@ -94,28 +94,21 @@ module GeoDiver
 
       def run_analysis
         if config[:num_threads] > 1
-          run_r_core_multi_thread
+          run_analysis_multi_threaded
         else
-          run_r_core_single_thread
+          run_overview
+          run_dgea if @params['dgea'] == 'on'
+          run_gage if @params['gsea'] == 'on'
         end
-        assert_overview_output
-        assert_dgea_output if @params['dgea'] == 'on'
-        assert_gsea_output if @params['gsea'] == 'on'
       end
 
-      def run_r_core_multi_thread
+      def run_analysis_multi_threaded
         p = Pool.new(config[:num_threads])
         p.schedule { run_overview }
         p.schedule { run_dgea } if @params['dgea'] == 'on'
         p.schedule { run_gage } if @params['gsea'] == 'on'
       ensure
         p.shutdown
-      end
-
-      def run_r_core_single_thread
-        run_overview
-        run_dgea if @params['dgea'] == 'on'
-        run_gage if @params['gsea'] == 'on'
       end
 
       def run_overview
@@ -210,20 +203,6 @@ module GeoDiver
 
       def gage_clusterby_method
         (@params['gsea_cluster_based_on'] == 'on') ? 'Complete' : 'Toptable'
-      end
-
-      #
-      def assert_overview_output
-        true
-      end
-
-      #
-      def assert_dgea_output
-        true
-      end
-
-      def assert_gsea_output
-        true
       end
 
       def dbrdata
