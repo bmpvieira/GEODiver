@@ -3,7 +3,6 @@ require 'json'
 require 'omniauth'
 require 'omniauth-google-oauth2'
 require 'sinatra/base'
-require 'sinatra/cross_origin'
 require 'slim'
 
 require 'geodiver/load_geo_db'
