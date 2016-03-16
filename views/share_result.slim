@@ -45,7 +45,7 @@ html lang="en"
             .actions.right style=" display: -webkit-flex; margin-left: auto; padding: 10px 0;"
               a#download-all-results.waves-effect.btn-flat.nopadding.light-blue-text.text-darken-3 data-download="#{@results['assets_path']}/#{@results['geo_db']}_geodiver_results.zip" style="min-width:36px;padding:0 8px;margin-right:0px"
                 i.material-icons  file_download
-          - if @results['overview_exit_code'] == 1
+          - if @results['overview_exit_code'].to_i == 1
             .card-action
               span#overview.card-title.light-blue-text.text-darken-3 style=("padding-left:0;") data-overview-json="#{@results['assets_path']}/data.json"
                 |  Overview (PCA, HCA, Boxplots)
@@ -122,7 +122,7 @@ html lang="en"
                   li.tab.col.s6
                     a.light-blue-text.text-darken-3.heading2 href="#GSEA"  Gene Set Enrichment Analysis
                   .indicator.blue style="z-index:1"
-              - if @results['dgea_exit_code'] == 0
+              - if @results['dgea_exit_code'].to_i == 0
                 #DGEA.col.s12 data-dgea-json="#{@results['assets_path']}/dgea_data.json"
                   p.section
                     span.light-blue-text.text-darken-3.heading2 Heatmap
@@ -166,7 +166,7 @@ html lang="en"
                     | <strong>Apologies, there was an error in running the DGEA Script. Please try again.</strong>
                   p.red-text.text-lighten-2  Error Message: The DGEA Script failed to run sucessfully (exit code: #{@results['dgea_exit_code']})
                   p.red-text.text-lighten-2  If the error persists, please contact the administrator.
-              - if @results['gage_exit_code'] == 0
+              - if @results['gage_exit_code'].to_i == 0
                 #GSEA.col.s12 data-gsea-json="#{@results['assets_path']}/gage_data.json"
                   p.section
                     span.light-blue-text.text-darken-3.heading2 Heatmap
