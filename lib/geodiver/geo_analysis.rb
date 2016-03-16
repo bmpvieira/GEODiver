@@ -1,4 +1,5 @@
 require 'base64'
+require 'English'
 require 'forwardable'
 require 'json'
 
@@ -45,15 +46,23 @@ module GeoDiver
       private
 
       def generate_results_hash(url)
-        { geo_db: @params['geo_db'],
-          user: encode_email,
-          uniq_result_id: @uniq_time,
-          results_url: generate_results_url(url),
-          share_url: generate_share_url(url),
-          assets_path: generate_relative_link(url),
-          full_path: @run_dir,
-          meta_data: parse_meta_json,
-          params: @params }
+        results = { geo_db: @params['geo_db'],
+                    user: encode_email,
+                    uniq_result_id: @uniq_time,
+                    results_url: generate_results_url(url),
+                    share_url: generate_share_url(url),
+                    assets_path: generate_relative_link(url),
+                    full_path: @run_dir,
+                    meta_data: parse_meta_json,
+                    params: @params }
+        add_exit_codes_to_the_results_hash(results)
+      end
+
+      def add_exit_codes_to_the_results_hash(results)
+        results[:overview_exit_code] = @overview_exit_code
+        results[:dgea_exit_code] = @dgea_exit_code
+        results[:gage_exit_code] = @gage_exit_code
+        results
       end
 
       #
@@ -88,6 +97,7 @@ module GeoDiver
       end
 
       def save_results_to_file(results)
+        logger.debug("Results: #{results}")
         output_params_json = File.join(@run_dir, 'params.json')
         File.open(output_params_json, 'w') { |f| f.puts results.to_json }
       end
@@ -114,17 +124,20 @@ module GeoDiver
       def run_overview
         logger.debug("Running CMD: #{overview_cmd}")
         system(overview_cmd)
+        @overview_exit_code = $CHILD_STATUS.exitstatus
       end
 
       #
       def run_dgea
         logger.debug("Running CMD: #{dgea_cmd}")
         system(dgea_cmd)
+        @dgea_exit_code = $CHILD_STATUS.exitstatus
       end
 
       def run_gage
         logger.debug("Running CMD: #{gsea_cmd}")
         system(gsea_cmd)
+        @gage_exit_code = $CHILD_STATUS.exitstatus
       end
 
       def overview_cmd

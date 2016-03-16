@@ -41,210 +41,223 @@
         .clearfix
         .collapsible-body.adv_param_collapsible
           .row
-            .input-field.col.s12
-              p
-                input#DGEA_input checked="checked" name="dgea" type="checkbox"
-                label.light-blue-text.text-darken-3 style="font-size:1.3rem;" for="DGEA_input"  Differential Gene Expression Analysis
-            #DGEAparams.col.s12
-              .row
-                .col.s12
-                  p
-                    input#dgea_toptable checked="checked" name="dgea_toptable" type="checkbox"
-                    label.light-blue-text.text-darken-3 for="dgea_toptable"  Top Table
-                #dgea_toptable_params.row
-                  .col.s12.m6
-                    span.grey-text style="font-size:.8rem;"  Number of Top Genes
-                    a.tooltipped data-delay="40" data-position="right" data-tooltip=("Number of most significantly expressed Genes to be displayed") 
-                    p.range-field
-                      input#no_of_top_genes name="dgea_number_top_genes" min="150" max="300" value="250" type="range" /
-                  .clearfix style="padding-bottom:1.5rem;"
-
-                  .input-field.col.s12.m6
-                    select name="dgea_volcano_pValue_cutoff"
-                      option value="fdr" selected=""  Benjamini & Hochberg (False discovery rate)
-                      option value="BY"  Benjamini & Yekutieli
-                      option value="bonferroni"  Bonferroni
-                      option value="hochberg"  Hochberg
-                      option value="holm"  Holm
-                      option value="hommel"  Hommel
-                      option value="None"  None
-                    label P value cut off
-              .row
-                .col.s12
-                  p
-                    input#dgea_heatmap checked="checked" name="dgea_heatmap" type="checkbox"
-                    label.light-blue-text.text-darken-3 for="dgea_heatmap"  Heatmap
-                #dgea_heatmap_params.row
-                  .col.s12.m6
-                    span.grey-text style="font-size:.8rem;"  Number of Genes to show in the Heatmap
-                    p.range-field
-                      input#no_of_top_genes name="dgea_heatmap_rows" min="50" max="150" value="100" type="range" /
-                  .clearfix style="padding-bottom:1.5rem;"
-                  .input-field.col.s12.m6
-                    select name="dgea_heatmap_distance_method"
-                      option value="euclidean" selected=""   Euclidean
-                      option value="maximum"  Maximum
-                      option value="manhattan"  Manhattan
-                      option value="canberra"  Canberra
-                      option value="binary"  Binary
-                      option value="minkowski"  Minkowski
-                    label Distance method
-                  .input-field.col.s12.m6
-                    select name="dgea_heatmap_clustering_method"
-                      option value="Complete" selected="" Complete
-                      option value="Centroid"   Centroid
-                      option value="Median"  Median
-                      option value="Mcquitty"  Mcquitty
-                      option value="Average"  Average
-                      option value="Single"  Single
-                      option value="Ward.D"  Ward.D
-                      option value="Ward.D2"  Ward.D2
-                    label Clustering method
-                  .clearfix style="padding-bottom:1rem;"
-                  .col.s12
-                    span.grey-text Heatmap Dendograms:
-                  .col.s12
-                    .switch 
-                      label
-                        | Off
-                        input name="dgea_cluster_by_genes" type="checkbox" checked="" /
-                        span.lever
-                        | Cluster genes
-                      a.tooltipped data-delay="40" data-position="right" data-tooltip="In the Heatmap, genes will be clustered and ordered accordingly" 
-                        i.material-icons.light-blue-text.text-darken-3 style="font-size:1.3rem;" info
-                  .col.s12 style="padding-top:1rem;"
-                    .switch 
-                      label
-                        | Off
-                        input name="dgea_cluster_by_samples" type="checkbox" checked="" /
-                        span.lever
-                        | Cluster Samples
-                      a.tooltipped data-delay="40" data-position="right" data-tooltip="In the Heatmap, samples will be clustered and ordered accordingly" 
-                        i.material-icons.light-blue-text.text-darken-3 style="font-size:1.3rem;" info
-
-                  .clearfix style="padding-bottom:1.5rem;"
-                  .col.s12
-                    span.grey-text Dendogram Clustering based on:
-                    .switch 
-                      label
-                        | Top table
-                        input name="dgea_cluster_based_on" type="checkbox" checked="" /
-                        span.lever
-                        | Complete Dataset
-                      a.tooltipped data-delay="40" data-position="right" data-tooltip="The amount of data to be used in the clustering dendogram within the heatmap" 
-                        i.material-icons.light-blue-text.text-darken-3 style="font-size:1.3rem;" info
-                  .clearfix style="padding-bottom:1.5rem;"
-
-              .row
-                .col.s12
-                  p
-                    input#dgea_volcano checked="checked" name="dgea_volcano" type="checkbox"
-                    label.light-blue-text.text-darken-3 for="dgea_volcano"  Volcano Plot
-            .input-field.col.s12
-              p
-                input#GSEA_input checked="checked" name="gsea" type="checkbox"
-                label.light-blue-text.text-darken-3 style="font-size:1.3rem;" for="GSEA_input"  Gene Set Enrichment Analysis
-              .clearfix style="padding-bottom:1rem;"
-            #GSEAparams.col.s12
-              input-field.col.s12
-                span.grey-text style="font-size:.8rem;"  Analysis Type
+            .col.s12
+              ul#adv_params_params_tabs.tabs onclick="$('#params_indicator').removeClass('initial_tab');"
+                li.tab.col.s6
+                  a#DGEA_params_tab.active.light-blue-text.text-darken-3.heading2 href="#DGEA_params"  Differential Gene Expression Analysis
+                li.tab.col.s6
+                  a.light-blue-text.text-darken-3.heading2 href="#GSEA_params"  Gene Set Enrichment Analysis
+                #params_indicator.indicator.blue style="z-index:1"
+            #DGEA_params.col.s12
+              .input-field.col.s12
                 p
-                  input#gsea_type name="gsea_type" value="ExpVsExp" checked="" type="radio"
-                  label for="gsea_type"  Experimental vs Experimental
-                  a.tooltipped data-delay="40" data-position="right" data-tooltip="Experimental against Experimental"
-                    i.material-icons.light-blue-text.text-darken-3 style="font-size:1.3rem;" info
-                p
-                  input#gsea_type1 name="gsea_type" value="ExpVsCtrl" type="radio"
-                  label for="gsea_type1"  Experimental vs Control
-                  a.tooltipped data-delay="40" data-position="right" data-tooltip="Experimental against a Control"
-                    i.material-icons.light-blue-text.text-darken-3 style="font-size:1.3rem;" info
-              .clearfix style="padding-bottom:2rem;" 
-              #gage_select_control.col.s12 style="display:none;"
-                span.grey-text Select Control
-                .switch 
-                  label
-                    | Group 1
-                    input name="gsea_control_group" type="checkbox" checked="" /
-                    span.lever
-                    | Group 2
-                  a.tooltipped data-delay="50" data-position="right" data-tooltip="Pick the Control group"
-                    i.material-icons.light-blue-text.text-darken-3 style="font-size:1.3rem;" info
-              .clearfix style="padding-bottom:2rem;"
-              .input-field.col.s12.m6
-                select name="gsea_dataset"
-                  optgroup label="KEGG" 
-                    option selected="" value="KEGG"  Kegg
-                  optgroup label=("Gene Ontology") 
-                    option value="BP"  Biological Function
-                    option value="MF"  Molecular Function
-                    option value="CC"  Cellular Component
-                label Gene Sets
-              .clearfix style="padding-bottom:2.5rem;" 
-              .row
-                .col.s12
-                  p
-                    input#gsea_heatmap checked="checked" name="gsea_heatmap" type="checkbox"
-                    label.light-blue-text.text-darken-3 for="gsea_heatmap"  Heatmap
-                #gsea_heatmap_params.row
-                  .col.s12.m6
-                    span.grey-text style="font-size:.8rem;" Maximum number of pathways to show in the Heatmap
-                    p.range-field
-                      input#no_of_top_genes name="gsea_heatmap_rows" min="50" max="150" value="100" type="range" /
-                  .clearfix style="padding-bottom:1.5rem;"
-                  .input-field.col.s12.m6
-                    select name="gsea_heatmap_distance_method"
-                      option value="euclidean" selected=""   Euclidean
-                      option value="maximum"  Maximum
-                      option value="manhattan"  Manhattan
-                      option value="canberra"  Canberra
-                      option value="binary"  Binary
-                      option value="minkowski"  Minkowski
-                    label Distance method
-                  .input-field.col.s12.m6
-                    select name="gsea_heatmap_clustering_method"
-                      option value="Complete" selected="" Complete
-                      option value="Centroid"   Centroid
-                      option value="Median"  Median
-                      option value="Mcquitty"  Mcquitty
-                      option value="Average"  Average
-                      option value="Single"  Single
-                      option value="Ward.D"  Ward.D
-                      option value="Ward.D2"  Ward.D2
-                    label Clustering method
-                  .clearfix style="padding-bottom:1rem;"
+                  input#DGEA_input checked="checked" name="dgea" type="checkbox"
+                  label.light-blue-text.text-darken-3 style="font-size:1.3rem;" for="DGEA_input"  Differential Gene Expression Analysis
+              #DGEAparams.col.s12
+                .row
                   .col.s12
-                    span.grey-text Heatmap Dendograms:
-                  .col.s12
-                    .switch 
-                      label
-                        | Off
-                        input name="gsea_cluster_by_genes" type="checkbox" checked="" /
-                        span.lever
-                        | Cluster genes
-                      a.tooltipped data-delay="40" data-position="right" data-tooltip="In the Heatmap, genes will be clustered and ordered accordingly" 
-                        i.material-icons.light-blue-text.text-darken-3 style="font-size:1.3rem;" info
-                  .col.s12 style="padding-top:1rem;"
-                    .switch 
-                      label
-                        | Off
-                        input name="gsea_cluster_by_samples" type="checkbox" checked="" /
-                        span.lever
-                        | Cluster Samples
-                      a.tooltipped data-delay="40" data-position="right" data-tooltip="In the Heatmap, samples will be clustered and ordered accordingly" 
-                        i.material-icons.light-blue-text.text-darken-3 style="font-size:1.3rem;" info
+                    p
+                      input#dgea_toptable checked="checked" name="dgea_toptable" type="checkbox"
+                      label.light-blue-text.text-darken-3 for="dgea_toptable"  Top Table
+                  #dgea_toptable_params.row
+                    .col.s12.m6
+                      span.grey-text style="font-size:.8rem;"  Number of Top Genes
+                      a.tooltipped data-delay="40" data-position="right" data-tooltip=("Number of most significantly expressed Genes to be displayed") 
+                      p.range-field
+                        input#no_of_top_genes name="dgea_number_top_genes" min="150" max="300" value="250" type="range" /
+                    .clearfix style="padding-bottom:1.5rem;"
 
-                  .clearfix style="padding-bottom:1.5rem;"
+                    .input-field.col.s12.m6
+                      select name="dgea_volcano_pValue_cutoff"
+                        option value="fdr" selected=""  Benjamini & Hochberg (False discovery rate)
+                        option value="BY"  Benjamini & Yekutieli
+                        option value="bonferroni"  Bonferroni
+                        option value="hochberg"  Hochberg
+                        option value="holm"  Holm
+                        option value="hommel"  Hommel
+                        option value="None"  None
+                      label P value cut off
+                .row
                   .col.s12
-                    span.grey-text Dendogram Clustering based on:
-                    .switch 
-                      label
-                        | Top table
-                        input name="gsea_cluster_based_on" type="checkbox" checked="" /
-                        span.lever
-                        | Complete Dataset
-                      a.tooltipped data-delay="40" data-position="right" data-tooltip="The amount of data to be used in the clustering dendogram within the heatmap" 
-                        i.material-icons.light-blue-text.text-darken-3 style="font-size:1.3rem;" info
-                  .clearfix style="padding-bottom:1.5rem;"
+                    p
+                      input#dgea_heatmap checked="checked" name="dgea_heatmap" type="checkbox"
+                      label.light-blue-text.text-darken-3 for="dgea_heatmap"  Heatmap
+                  #dgea_heatmap_params.row
+                    .col.s12.m6
+                      span.grey-text style="font-size:.8rem;"  Number of Genes to show in the Heatmap
+                      p.range-field
+                        input#no_of_top_genes name="dgea_heatmap_rows" min="50" max="150" value="100" type="range" /
+                    .clearfix style="padding-bottom:1.5rem;"
+                    .input-field.col.s12.m6
+                      select name="dgea_heatmap_distance_method"
+                        option value="euclidean" selected=""   Euclidean
+                        option value="maximum"  Maximum
+                        option value="manhattan"  Manhattan
+                        option value="canberra"  Canberra
+                        option value="binary"  Binary
+                        option value="minkowski"  Minkowski
+                      label Distance method
+                    .input-field.col.s12.m6
+                      select name="dgea_heatmap_clustering_method"
+                        option value="Complete" selected="" Complete
+                        option value="Centroid"   Centroid
+                        option value="Median"  Median
+                        option value="Mcquitty"  Mcquitty
+                        option value="Average"  Average
+                        option value="Single"  Single
+                        option value="Ward.D"  Ward.D
+                        option value="Ward.D2"  Ward.D2
+                      label Clustering method
+                    .clearfix style="padding-bottom:1rem;"
+                    .col.s12
+                      span.grey-text Heatmap Dendograms:
+                    .col.s12
+                      .switch 
+                        label
+                          | Off
+                          input name="dgea_cluster_by_genes" type="checkbox" checked="" /
+                          span.lever
+                          | Cluster genes
+                        a.tooltipped data-delay="40" data-position="right" data-tooltip="In the Heatmap, genes will be clustered and ordered accordingly" 
+                          i.material-icons.light-blue-text.text-darken-3 style="font-size:1.3rem;" info
+                    .col.s12 style="padding-top:1rem;"
+                      .switch 
+                        label
+                          | Off
+                          input name="dgea_cluster_by_samples" type="checkbox" checked="" /
+                          span.lever
+                          | Cluster Samples
+                        a.tooltipped data-delay="40" data-position="right" data-tooltip="In the Heatmap, samples will be clustered and ordered accordingly" 
+                          i.material-icons.light-blue-text.text-darken-3 style="font-size:1.3rem;" info
+
+                    .clearfix style="padding-bottom:1.5rem;"
+                    .col.s12
+                      span.grey-text Dendogram Clustering based on:
+                      .switch 
+                        label
+                          | Top table
+                          input name="dgea_cluster_based_on" type="checkbox" checked="" /
+                          span.lever
+                          | Complete Dataset
+                        a.tooltipped data-delay="40" data-position="right" data-tooltip="The amount of data to be used in the clustering dendogram within the heatmap" 
+                          i.material-icons.light-blue-text.text-darken-3 style="font-size:1.3rem;" info
+                    .clearfix style="padding-bottom:1.5rem;"
+
+                .row
+                  .col.s12
+                    p
+                      input#dgea_volcano checked="checked" name="dgea_volcano" type="checkbox"
+                      label.light-blue-text.text-darken-3 for="dgea_volcano"  Volcano Plot
+
+
+            #GSEA_params.col.s12
+              .input-field.col.s12
+                p
+                  input#GSEA_input checked="checked" name="gsea" type="checkbox"
+                  label.light-blue-text.text-darken-3 style="font-size:1.3rem;" for="GSEA_input"  Gene Set Enrichment Analysis
+                .clearfix style="padding-bottom:1rem;"
+              #GSEAparams.col.s12
+                input-field.col.s12
+                  span.grey-text style="font-size:.8rem;"  Analysis Type
+                  p
+                    input#gsea_type name="gsea_type" value="ExpVsExp" type="radio"
+                    label for="gsea_type"  Experimental vs Experimental
+                    a.tooltipped data-delay="40" data-position="right" data-tooltip="Experimental against Experimental"
+                      i.material-icons.light-blue-text.text-darken-3 style="font-size:1.3rem;" info
+                  p
+                    input#gsea_type1 name="gsea_type" value="ExpVsCtrl" checked="" type="radio"
+                    label for="gsea_type1"  Experimental vs Control
+                    a.tooltipped data-delay="40" data-position="right" data-tooltip="Experimental against a Control"
+                      i.material-icons.light-blue-text.text-darken-3 style="font-size:1.3rem;" info
+                .clearfix style="padding-bottom:2rem;" 
+                #gage_select_control.col.s12
+                  span.grey-text Select Control
+                  .switch 
+                    label
+                      a#groupa_params.tooltipped data-delay="50" data-position="below" data-tooltip="This is group A" style="color:#9e9e9e;"
+                        | Group A
+                      input name="gsea_control_group" type="checkbox" checked="" /
+                      span.lever
+                      a#groupb_params.tooltipped data-delay="50" data-position="below" data-tooltip="This is group B" style="color:#9e9e9e;"
+                        | Group B
+                    a.tooltipped data-delay="50" data-position="right" data-tooltip="Pick the Control group"
+                      i.material-icons.light-blue-text.text-darken-3 style="font-size:1.3rem;" info
+                .clearfix style="padding-bottom:2rem;"
+                .input-field.col.s12.m6
+                  select name="gsea_dataset"
+                    optgroup label="KEGG" 
+                      option selected="" value="KEGG"  Kegg
+                    optgroup label=("Gene Ontology") 
+                      option value="BP"  Biological Function
+                      option value="MF"  Molecular Function
+                      option value="CC"  Cellular Component
+                  label Gene Sets
+                .clearfix style="padding-bottom:2.5rem;" 
+                .row
+                  .col.s12
+                    p
+                      input#gsea_heatmap checked="checked" name="gsea_heatmap" type="checkbox"
+                      label.light-blue-text.text-darken-3 for="gsea_heatmap"  Heatmap
+                  #gsea_heatmap_params.row
+                    .col.s12.m6
+                      span.grey-text style="font-size:.8rem;" Maximum number of pathways to show in the Heatmap
+                      p.range-field
+                        input#no_of_top_genes name="gsea_heatmap_rows" min="50" max="150" value="100" type="range" /
+                    .clearfix style="padding-bottom:1.5rem;"
+                    .input-field.col.s12.m6
+                      select name="gsea_heatmap_distance_method"
+                        option value="euclidean" selected=""   Euclidean
+                        option value="maximum"  Maximum
+                        option value="manhattan"  Manhattan
+                        option value="canberra"  Canberra
+                        option value="binary"  Binary
+                        option value="minkowski"  Minkowski
+                      label Distance method
+                    .input-field.col.s12.m6
+                      select name="gsea_heatmap_clustering_method"
+                        option value="Complete" selected="" Complete
+                        option value="Centroid"   Centroid
+                        option value="Median"  Median
+                        option value="Mcquitty"  Mcquitty
+                        option value="Average"  Average
+                        option value="Single"  Single
+                        option value="Ward.D"  Ward.D
+                        option value="Ward.D2"  Ward.D2
+                      label Clustering method
+                    .clearfix style="padding-bottom:1rem;"
+                    .col.s12
+                      span.grey-text Heatmap Dendograms:
+                    .col.s12
+                      .switch 
+                        label
+                          | Off
+                          input name="gsea_cluster_by_genes" type="checkbox" checked="" /
+                          span.lever
+                          | Cluster genes
+                        a.tooltipped data-delay="40" data-position="right" data-tooltip="In the Heatmap, genes will be clustered and ordered accordingly" 
+                          i.material-icons.light-blue-text.text-darken-3 style="font-size:1.3rem;" info
+                    .col.s12 style="padding-top:1rem;"
+                      .switch 
+                        label
+                          | Off
+                          input name="gsea_cluster_by_samples" type="checkbox" checked="" /
+                          span.lever
+                          | Cluster Samples
+                        a.tooltipped data-delay="40" data-position="right" data-tooltip="In the Heatmap, samples will be clustered and ordered accordingly" 
+                          i.material-icons.light-blue-text.text-darken-3 style="font-size:1.3rem;" info
+
+                    .clearfix style="padding-bottom:1.5rem;"
+                    .col.s12
+                      span.grey-text Dendogram Clustering based on:
+                      .switch 
+                        label
+                          | Top table
+                          input name="gsea_cluster_based_on" type="checkbox" checked="" /
+                          span.lever
+                          | Complete Dataset
+                        a.tooltipped data-delay="40" data-position="right" data-tooltip="The amount of data to be used in the clustering dendogram within the heatmap" 
+                          i.material-icons.light-blue-text.text-darken-3 style="font-size:1.3rem;" info
+                    .clearfix style="padding-bottom:1.5rem;"
 
 
     button#analyse_geo_btn.btn.waves-effect.waves-light.light-blue.accent-4.btn-large.analyse_geo_btn type="submit" value="input" 

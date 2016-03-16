@@ -45,64 +45,73 @@ html lang="en"
             .actions.right style=" display: -webkit-flex; margin-left: auto; padding: 10px 0;"
               a#download-all-results.waves-effect.btn-flat.nopadding.light-blue-text.text-darken-3 data-download="#{@results['assets_path']}/#{@results['geo_db']}_geodiver_results.zip" style="min-width:36px;padding:0 8px;margin-right:0px"
                 i.material-icons  file_download
-          .card-action
-            span#overview.card-title.light-blue-text.text-darken-3 style=("padding-left:0;") data-overview-json="#{@results['assets_path']}/data.json"
-              |  Overview (PCA, HCA, Boxplots)
-            p.section
-              span.light-blue-text.text-darken-3.heading2 Overview Boxplots 
-              img.materialboxed src="#{@results['assets_path']}/boxplot.png" width="100%"
-            p.section
-              span.light-blue-text.text-darken-3.heading2 Principal Component Analysis
-            #PCA_plot style=("height: 500px;")
-              /! Plotly chart will be drawn inside this DIV
-            p.section
-              span.light-blue-text.text-darken-3.heading2 Principal Component Exploratory Analysis
-              .row
-                .col.s12
-                  ul#pca_tabs.tabs
-                    li.tab.col.s6
-                      a.light-blue-text.text-darken-3 href="#pca2d"  2 Dimensions
-                    li.tab.col.s6
-                      a.light-blue-text.text-darken-3 href="#pca3d"  3 Dimensions
-                    .indicator.blue style="z-index:1"
-                #pca2d.col.s12 style="padding-top:1.5rem;"
-                  form#pca2d_redraw
-                    .row
-                      .input-field.col.s12.m5
-                        select#PC2doption1 name='PC2doption1'
-                          option disabled="" selected="" value=""  Choose your option
-                        label First PCA to analyse
-                      .input-field.col.s12.m5
-                        select#PC2doption2 name='PC2doption2'
-                          option disabled="" selected="" value=""  Choose your option
-                        label Second PCA to analyse
-                      .col.s12.m2
-                        button#redraw_pca.btn.waves-effect.waves-light.light-blue.accent-4.btn-large type="submit" value="redraw"
-                          | Redraw Plot
-                  .clearfix
-                  p.select_pc2_validations.red-text style="font-size: .8rem; padding-left:1rem;"
-                  #pca2d_plot style=("height: 70vh;")
-                #pca3d.col.s12 style="padding-top:1.5rem;"
-                  form#pca3d_redraw
-                    .row
-                      .input-field.col.s12.m3
-                        select#PC3doption1 name='PC3doption1'
-                          option disabled="" selected="" value=""  Choose your option
-                        label First PCA to analyse
-                      .input-field.col.s12.m3
-                        select#PC3doption2 name='PC3doption2'
-                          option disabled="" selected="" value=""  Choose your option
-                        label Second PCA to analyse
-                      .input-field.col.s12.m3
-                        select#PC3doption3 name='PC3doption3'
-                          option disabled="" selected="" value=""  Choose your option
-                        label Third PCA to analyse
-                      .col.s12.m2.offset-m1
-                        button#redraw_pca.btn.waves-effect.waves-light.light-blue.accent-4.btn-large type="submit" value="redraw"
-                          | Redraw Plot
-                  .clearfix
-                  p.select_pc3_validations.red-text style="font-size: .8rem; padding-left:1rem;"
-                  #pca3d_plot style=("height: 70vh;")
+          - if @results['overview_exit_code'] == 1
+            .card-action
+              span#overview.card-title.light-blue-text.text-darken-3 style=("padding-left:0;") data-overview-json="#{@results['assets_path']}/data.json"
+                |  Overview (PCA, HCA, Boxplots)
+              p.section
+                span.light-blue-text.text-darken-3.heading2 Overview Boxplots 
+                img.materialboxed src="#{@results['assets_path']}/boxplot.png" width="100%"
+              p.section
+                span.light-blue-text.text-darken-3.heading2 Principal Component Analysis
+              #PCA_plot style=("height: 500px;")
+                /! Plotly chart will be drawn inside this DIV
+              p.section
+                span.light-blue-text.text-darken-3.heading2 Principal Component Exploratory Analysis
+                .row
+                  .col.s12
+                    ul#pca_tabs.tabs
+                      li.tab.col.s6
+                        a.light-blue-text.text-darken-3 href="#pca2d"  2 Dimensions
+                      li.tab.col.s6
+                        a.light-blue-text.text-darken-3 href="#pca3d"  3 Dimensions
+                      .indicator.blue style="z-index:1"
+                  #pca2d.col.s12 style="padding-top:1.5rem;"
+                    form#pca2d_redraw
+                      .row
+                        .input-field.col.s12.m5
+                          select#PC2doption1 name='PC2doption1'
+                            option disabled="" selected="" value=""  Choose your option
+                          label First PCA to analyse
+                        .input-field.col.s12.m5
+                          select#PC2doption2 name='PC2doption2'
+                            option disabled="" selected="" value=""  Choose your option
+                          label Second PCA to analyse
+                        .col.s12.m2
+                          button#redraw_pca.btn.waves-effect.waves-light.light-blue.accent-4.btn-large type="submit" value="redraw"
+                            | Redraw Plot
+                    .clearfix
+                    p.select_pc2_validations.red-text style="font-size: .8rem; padding-left:1rem;"
+                    #pca2d_plot style=("height: 70vh;")
+                  #pca3d.col.s12 style="padding-top:1.5rem;"
+                    form#pca3d_redraw
+                      .row
+                        .input-field.col.s12.m3
+                          select#PC3doption1 name='PC3doption1'
+                            option disabled="" selected="" value=""  Choose your option
+                          label First PCA to analyse
+                        .input-field.col.s12.m3
+                          select#PC3doption2 name='PC3doption2'
+                            option disabled="" selected="" value=""  Choose your option
+                          label Second PCA to analyse
+                        .input-field.col.s12.m3
+                          select#PC3doption3 name='PC3doption3'
+                            option disabled="" selected="" value=""  Choose your option
+                          label Third PCA to analyse
+                        .col.s12.m2.offset-m1
+                          button#redraw_pca.btn.waves-effect.waves-light.light-blue.accent-4.btn-large type="submit" value="redraw"
+                            | Redraw Plot
+                    .clearfix
+                    p.select_pc3_validations.red-text style="font-size: .8rem; padding-left:1rem;"
+                    #pca3d_plot style=("height: 70vh;")
+          - else
+            .card-action
+              span#overview.card-title.light-blue-text.text-darken-3 style=("padding-left:0;")
+                |  Overview (PCA, HCA, Boxplots)
+              p.red-text.text-lighten-2 style="font-size:1.5rem;"
+                | <strong>Apologies, there was an error in running the Overview Script. Please try again.</strong>
+              p.red-text.text-lighten-2  Error Message: The Overview Script failed to run sucessfully (exit code: #{@results['overview_exit_code']})
+              p.red-text.text-lighten-2  If the error persists, please contact the administrator.
           .card-action
             span.card-title.light-blue-text.text-darken-3 style=("padding-left:0;")  Results
             .row
@@ -113,70 +122,84 @@ html lang="en"
                   li.tab.col.s6
                     a.light-blue-text.text-darken-3.heading2 href="#GSEA"  Gene Set Enrichment Analysis
                   .indicator.blue style="z-index:1"
-              #DGEA.col.s12 data-dgea-json="#{@results['assets_path']}/dgea_data.json"
-                p.section
-                  span.light-blue-text.text-darken-3.heading2 Heatmap
-                  br
-                .materialboxed_center
-                  img.materialboxed src="#{@results['assets_path']}/dgea_heatmap.svg" width="100%"
-                .row
-                  #admin.col.s12
-                    #dgea-top-table-wrapper.material-table
-                      .table-header
-                        span.table-title.light-blue-text.text-darken-3.heading2  Differential Genes - Top Table
-                        .actions
-                          a#download-top-table.waves-effect.btn-flat.nopadding href="#{@results['assets_path']}/dgea_toptable.tsv"
-                            i.material-icons  file_download
-                          a.search-toggle.waves-effect.btn-flat.nopadding
-                            i.material-icons  search
-                      table#dgea-top-table
-                        thead
-                          tr
-                            th ID
-                            th logFC
-                            th AveExpr
-                            th t Value 
-                            th P Value
-                            th Adjusted P Value
-                            th B
-                            th
-                p.section
-                  span.light-blue-text.text-darken-3.heading2 Volcano Plot
-                  br
-                .materialboxed_center
-                  img.materialboxed src="#{@results['assets_path']}/dgea_volcano.png" width="100%"
-                p.section
-                  span.light-blue-text.text-darken-3.heading2 Volcano Plots
-                  br
-                #volcano_plot style=("width: 100%; height: 600px;") 
-                  /! Plotly chart will be drawn inside this DIV
-              #GSEA.col.s12 data-gsea-json="#{@results['assets_path']}/gage_data.json"
-                p.section
-                  span.light-blue-text.text-darken-3.heading2 Heatmap
-                  br
-                .materialboxed_center
-                  img.materialboxed src="#{@results['assets_path']}/gage_heatmap.svg" width="100%"
-                .row
-                  #admin.col.s12
-                    #gsea-top-table-wrapper.material-table
-                      .table-header
-                        span.table-title.light-blue-text.text-darken-3.heading2  Generally Applicable Gene Set Enrichment Analysis - Top Table
-                        .actions
-                          a#download-top-table.waves-effect.btn-flat.nopadding href="#{@results['assets_path']}/gage_toptable.tsv"
-                            i.material-icons  file_download
-                          a.search-toggle.waves-effect.btn-flat.nopadding
-                            i.material-icons  search
-                      table#gsea-top-table
-                        thead
-                          tr
-                            th Pathway ID
-                            th Pathway
-                            th P Geomean
-                            th Stat Mean
-                            th P Value
-                            th Q Value
-                            th Set Size
-                            th
+              - if @results['dgea_exit_code'] == 0
+                #DGEA.col.s12 data-dgea-json="#{@results['assets_path']}/dgea_data.json"
+                  p.section
+                    span.light-blue-text.text-darken-3.heading2 Heatmap
+                    br
+                  .materialboxed_center
+                    img.materialboxed src="#{@results['assets_path']}/dgea_heatmap.svg" width="100%"
+                  .row
+                    #admin.col.s12
+                      #dgea-top-table-wrapper.material-table
+                        .table-header
+                          span.table-title.light-blue-text.text-darken-3.heading2  Differential Genes - Top Table
+                          .actions
+                            a#download-top-table.waves-effect.btn-flat.nopadding href="#{@results['assets_path']}/dgea_toptable.tsv"
+                              i.material-icons  file_download
+                            a.search-toggle.waves-effect.btn-flat.nopadding
+                              i.material-icons  search
+                        table#dgea-top-table
+                          thead
+                            tr
+                              th ID
+                              th logFC
+                              th AveExpr
+                              th t Value 
+                              th P Value
+                              th Adjusted P Value
+                              th B
+                              th
+                  p.section
+                    span.light-blue-text.text-darken-3.heading2 Volcano Plot
+                    br
+                  .materialboxed_center
+                    img.materialboxed src="#{@results['assets_path']}/dgea_volcano.png" width="100%"
+                  p.section
+                    span.light-blue-text.text-darken-3.heading2 Volcano Plots
+                    br
+                  #volcano_plot style=("width: 100%; height: 600px;") 
+                    /! Plotly chart will be drawn inside this DIV
+              - else 
+                #DGEA.col.s12
+                  p.red-text.text-lighten-2 style="font-size:1.5rem;"
+                    | <strong>Apologies, there was an error in running the DGEA Script. Please try again.</strong>
+                  p.red-text.text-lighten-2  Error Message: The DGEA Script failed to run sucessfully (exit code: #{@results['dgea_exit_code']})
+                  p.red-text.text-lighten-2  If the error persists, please contact the administrator.
+              - if @results['gage_exit_code'] == 0
+                #GSEA.col.s12 data-gsea-json="#{@results['assets_path']}/gage_data.json"
+                  p.section
+                    span.light-blue-text.text-darken-3.heading2 Heatmap
+                    br
+                  .materialboxed_center
+                    img.materialboxed src="#{@results['assets_path']}/gage_heatmap.svg" width="100%"
+                  .row
+                    #admin.col.s12
+                      #gsea-top-table-wrapper.material-table
+                        .table-header
+                          span.table-title.light-blue-text.text-darken-3.heading2  Generally Applicable Gene Set Enrichment Analysis - Top Table
+                          .actions
+                            a#download-top-table.waves-effect.btn-flat.nopadding href="#{@results['assets_path']}/gage_toptable.tsv"
+                              i.material-icons  file_download
+                            a.search-toggle.waves-effect.btn-flat.nopadding
+                              i.material-icons  search
+                        table#gsea-top-table
+                          thead
+                            tr
+                              th Pathway ID
+                              th Pathway
+                              th P Geomean
+                              th Stat Mean
+                              th P Value
+                              th Q Value
+                              th Set Size
+                              th
+              - else 
+                #GSEA.col.s12
+                  p.red-text.text-lighten-2 style="font-size:1.5rem;"
+                    | <strong>Apologies, there was an error in running the GAGE Script. Please try again.</strong>
+                  p.red-text.text-lighten-2  Error Message: The GAGE Script failed to run sucessfully (exit code: #{@results['gage_exit_code']})
+                  p.red-text.text-lighten-2  If the error persists, please contact the administrator.
 
 
 
