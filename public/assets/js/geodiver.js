@@ -70,6 +70,34 @@ if (!GD) {
             $('.adv_param_collapsible').collapsible();
             $("input:radio[name=factor]:first").attr('checked', true);
             $('#' + $("input:radio[name=factor]:first").attr('id') + '_select').show();
+            $('#adv_params_btn').click(function(){
+              if ( ! $('#adv_params_params_tabs').hasClass('tabs_initialised')) {
+                setTimeout(
+                  function(){
+                    $('#adv_params_params_tabs').tabs();
+                    $('#adv_params_params_tabs').addClass('tabs_initialised');
+                  }, 1);
+              }
+            });
+            $('select[name="groupa[]"]').on('change', function(){
+              if ( $.isEmptyObject( $('select[name="groupa[]"]:enabled').val() ) ) {
+                $('#groupa_params').attr('data-tooltip', 'This is Group A' );
+                $('#groupa_params').tooltip({delay: 50});
+              } else {
+                $('#groupa_params').attr('data-tooltip', 'Group A: ' + $('select[name="groupa[]"]:enabled').val().join(", ") );
+                $('#groupa_params').tooltip({delay: 50});
+              }
+            });
+            $('select[name="groupb[]"]').on('change', function(){
+              if ( $.isEmptyObject( $('select[name="groupb[]"]:enabled').val() ) ) {
+                $('#groupb_params').attr('data-tooltip', 'This is Group B' );
+                $('#groupb_params').tooltip({delay: 50});
+              } else {
+                $('#groupb_params').attr('data-tooltip', 'Group B: ' + $('select[name="groupb[]"]:enabled').val().join(", ") );
+                $('#groupb_params').tooltip({delay: 50});
+              }
+            });
+
             GD.addAdvParamLogic();
             GD.addFactorToggle();
             $('select').material_select();
@@ -457,6 +485,10 @@ if (!GD) {
         $(target).show();
         $(target + ' select').removeAttr("disabled");
       }
+      $('#groupa_params').attr('data-tooltip', 'This is Group A' );
+      $('#groupa_params').tooltip({delay: 50});
+      $('#groupb_params').attr('data-tooltip', 'This is Group B' );
+      $('#groupb_params').tooltip({delay: 50});
     });
   };
 
