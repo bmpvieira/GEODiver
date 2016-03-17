@@ -17,7 +17,7 @@ end
 
 desc 'Install R dependencies'
 task :installRdependencies do
-  sh 'Rscript RCore/Installations.R'
+  sh 'Rscript RCore/installations.R'
 end
 
 task test: :spec
