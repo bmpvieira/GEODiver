@@ -1,6 +1,4 @@
 require 'bundler/gem_tasks'
-require 'rspec/core'
-require 'rspec/core/rake_task'
 
 task default: [:build]
 
@@ -11,7 +9,7 @@ task install: [:installRdependencies, :build] do
 end
 
 desc 'Runs tests and builds gem (default)'
-task build: [:test] do
+task :build do
   sh 'gem build geodiver.gemspec'
 end
 
@@ -20,9 +18,12 @@ task :installRdependencies do
   sh 'Rscript RCore/installations.R'
 end
 
-task test: :spec
-RSpec::Core::RakeTask.new(:spec) do |spec|
-  spec.pattern = FileList['spec/**/*_spec.rb']
+task test: :spec do
+  require 'rspec/core'
+  require 'rspec/core/rake_task'
+  RSpec::Core::RakeTask.new(:spec) do |spec|
+    spec.pattern = FileList['spec/**/*_spec.rb']
+  end
 end
 
 task :assets do
