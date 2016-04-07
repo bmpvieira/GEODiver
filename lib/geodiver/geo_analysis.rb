@@ -206,7 +206,10 @@ module GeoDiver
       end
 
       def to_comma_delimited_string(arr)
-        arr.each { |e| e.gsub!(/(?<!\\),/, '\,') }
+        arr.each do |e|
+          e.gsub!(/(?<!\\),/, '\,')
+          e.gsub!('-', '\-')
+        end
         arr.join(',')
       end
 
