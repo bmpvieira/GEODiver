@@ -62,7 +62,6 @@ module GeoDiver
 
     # Analyse Page
     get '/analyse' do
-      redirect to('auth/google_oauth2') if session[:user].nil?
       slim :analyse, layout: :app_layout
     end
 
@@ -102,7 +101,6 @@ module GeoDiver
 
     # Load the Geo Database
     post '/load_geo_db' do
-      redirect to('auth/google_oauth2') if session[:user].nil?
       @geo_db_results = LoadGeoData.run(params)
       # Convert the GeoDb into RData in the background if necessary
       session[:geodb] = LoadGeoData.convert_geodb_into_rdata(params['geo_db'])
@@ -111,7 +109,6 @@ module GeoDiver
 
     # Run the GeoDiver Analysis
     post '/analyse' do
-      redirect to('auth/google_oauth2') if session[:user].nil?
       email    = Base64.decode64(params[:user])
       @results = GeoAnalysis.run(params, email, request.base_url,
                                  session[:geodb])
@@ -158,9 +155,9 @@ module GeoDiver
 
     # Delete a Results Page
     post '/delete_result' do
-      redirect to('auth/google_oauth2') if session[:user].nil?
-      @results_url = File.join(GeoDiver.users_dir, session[:user].info['email'],
-                               params['geo_db'], params['result_id'])
+      email = (session[:user].nil?) ? 'docsnap' : session[:user].info['email']
+      @results_url = File.join(GeoDiver.users_dir, email, params['geo_db'],
+                               params['result_id'])
       FileUtils.rm_r @results_url if Dir.exist? @results_url
     end
 

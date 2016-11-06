@@ -46,21 +46,13 @@ html lang="en"
         a#logo-container.brand-logo.white-text.hide-on-large-only href="#{request.base_url}"
           | &nbsp;GeoDiver
         ul.hide-on-med-and-down.navbar_centered
-          - if uri =~ %r{/analyse}
-            li.active
-              a.white-text href="/analyse"  Analyse               
-            li
-              a.white-text href="/my_results"  My Results 
-          - elsif uri =~ %r{/my_results}
-            li
-              a.white-text href="/analyse"  Analyse               
-            li.active
-              a.white-text href="/my_results"  My Results 
-          - else
-            li
-              a.white-text href="/analyse"  Analyse               
-            li
-              a.white-text href="/my_results"  My Results 
+          li class=('active' if uri =~ %r{/analyse} )
+            a.white-text href="#{request.base_url}/analyse"  Analyse               
+          li class=('active' if uri =~ %r{/my_results} )
+            - if session[:user].nil?
+              a.white-text href="#login_modal"  My Results
+            - else
+              a.white-text href="#{request.base_url}/my_results"  My Results
         ul.right.hide-on-med-and-down style="position:absolute;top:0 !important;right:0;"
           - if ! session[:user].nil?
             li.user data-user="#{Base64.encode64(session[:user].info['email']).chomp}"
@@ -71,7 +63,7 @@ html lang="en"
                 .clearfix
           - else      
             li
-              a.white-text href="/auth/google_oauth2" 
+              a.white-text href="#{request.base_url}/auth/google_oauth2" 
                 i.material-icons.right> perm_identity
                 | Login
         .container
@@ -79,11 +71,11 @@ html lang="en"
             i.material-icons.white-text menu
         ul#nav-mobile.side-nav
           li
-            a href="/analyse"  Analyse
+            a href="#{request.base_url}/analyse"  Analyse
           li
-            a href="/my_results"  My Results
+            a href="#{request.base_url}/my_results"  My Results
           li
-            a href="/logout"  Logout
+            a href="#{request.base_url}/logout"  Logout
     == yield
     #loading_modal.modal
       .modal-content
@@ -134,7 +126,13 @@ html lang="en"
         a.modal-action.modal-close.waves-effect.waves-green.btn-flat.left href="#!"   Cancel
         a.delete-results.waves-effect.waves-red.btn-flat   Delete
 
-
+    #login_modal.modal
+      .modal-content
+        h4 Please Login to see your previous analyses
+        p  We need to know who you are in order to show you your previous analyses. Please click on the login button below in order to login using your google account.
+      .modal-footer
+        a.modal-action.modal-close.waves-effect.waves-red.btn-flat.left href="#!"   Cancel
+        a.waves-effect.waves-green.btn-flat  href="/auth/google_oauth2"  Login
 
     script src="https://code.jquery.com/jquery-2.1.1.min.js" 
     script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"

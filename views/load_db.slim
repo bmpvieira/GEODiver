@@ -5,7 +5,10 @@
       i.material-icons info
   form#analyse action="/analyse"
     input type="hidden" name="geo_db" value="#{@geo_db_results['Accession'].upcase}"
-    input type="hidden" name="user" value="#{Base64.encode64(session[:user].info['email']).chomp}"
+    - if session[:user].nil?
+      input type="hidden" name="user" value="#{Base64.encode64('geodiver').chomp}"
+    - else
+      input type="hidden" name="user" value="#{Base64.encode64(session[:user].info['email']).chomp}"
     .input-field.col.s12
       span.light-blue-text.text-darken-3.heading2 Select Factor to Analyse
       - @geo_db_results['Factors'].keys.each do |factor|
