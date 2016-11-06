@@ -110,6 +110,8 @@ module GeoDiver
           run_dgea if @params['dgea'] == 'on'
           run_gage if @params['gsea'] == 'on'
         end
+        compress_svg(File.join(@run_dir, 'dgea_heatmap.svg'))
+        compress_svg(File.join(@run_dir, 'gage_heatmap.svg'))
       end
 
       def run_analysis_multi_threaded
@@ -193,6 +195,20 @@ module GeoDiver
         cmd = "zip -jr '#{run_dir}/#{geodb}_geodiver_results.zip' '#{run_dir}'"
         logger.debug("Running CMD: #{cmd}")
         system("#{cmd}")
+      end
+
+      def compress_svg_files(run_dir)
+        dgea_svg_file = 
+        gage_svg_file = 
+        compress_svg(File.join(run_dir, 'dgea_heatmap.svg'))
+        compress_svg(File.join(run_dir, 'gage_heatmap.svg'))
+      end
+
+      def compress_svg(input)
+        return unless File.exist?(input)
+        cmd = "svgo #{input} #{input}.temp"
+        system("#{cmd}")
+        FileUtils.mv("#{input}.temp", input, :force => true)
       end
 
       def analyses_to_carry_out
