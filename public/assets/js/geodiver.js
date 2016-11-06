@@ -58,7 +58,8 @@ if (!GD) {
         var geo_db = $('input[name=geo_db]').val().toUpperCase();
         $('#modal_header_text').text('Loading GEO Dataset: ' + geo_db);
         $('#modal_text').text('This should take a few seconds. Please leave this page open');
-        $('#loading_modal').openModal({ dismissible: false });
+        $('#loading_modal').modal({ dismissible: false });
+        $('#loading_modal').modal('open');
         $.ajax({
           type: 'POST',
           url: '/load_geo_db',
@@ -104,7 +105,7 @@ if (!GD) {
             $('.tooltipped').tooltip();
             GD.addDataSetInfo();
             GD.analyseValidation();
-            $('#loading_modal').closeModal();
+            $('#loading_modal').modal('close');
           },
           error: function(e, status) {
             GD.ajaxError(e, status);
@@ -136,7 +137,8 @@ if (!GD) {
         var geo_db = $('input[name=geo_db]').val().toUpperCase();
         $('#modal_header_text').text('Analysing GEO Dataset: ' + geo_db);
         $('#modal_text').text('This should take a few minutes. Please leave this page open');
-        $('#loading_modal').openModal({ dismissible: false});
+        $('#loading_modal').modal({ dismissible: false});
+        $('#loading_modal').modal('open');
         $.ajax({
           type: 'POST',
           url: '/analyse',
@@ -148,13 +150,12 @@ if (!GD) {
               $('#results_tabs').tabs(); // init material tabs
               GD.createPlots();
               $('.materialboxed').materialbox(); // init materialbox
-              $('.modal-trigger').leanModal();
               $('.select_factors input.select-dropdown').removeAttr('disabled');
               GD.download_all_results();
               GD.delete_result();
               GD.share_result();
               GD.remove_share();
-              $('#loading_modal').closeModal();
+              $('#loading_modal').modal('close');
               $('html, body').animate({
                   scrollTop: $('#results_section').offset().top
               });
@@ -171,7 +172,8 @@ if (!GD) {
   GD.geneExpressionAjax = function(currentRow, geneId) {
     $('#modal_header_text').text('Loading Graphics for Gene: ' + geneId);
     $('#modal_text').text('This should take a few seconds. Please leave this page open');
-    $('#loading_modal').openModal({ dismissible: false});
+    $('#loading_modal').modal({ dismissible: false});
+    $('#loading_modal').modal('open');
     var resultId = currentRow.closest('.results_card').data('result');
     var geoDb    = currentRow.closest('.results_card').data('geodb');
     var user     = currentRow.closest('.results_card').data('user');
@@ -183,7 +185,7 @@ if (!GD) {
         currentRow.addClass('parent');
         currentRow.after('<tr class="child" id="'+ geneId + 'ChildRow"><td colspan="8"><div id="' + geneId + 'Plot"></div></td></tr>');
         GD.createExpressionPlot(response, geneId);
-        $('#loading_modal').closeModal();
+        $('#loading_modal').modal('close');
       },
       error: function(e, status) {
         GD.ajaxError(e, status);
@@ -194,7 +196,8 @@ if (!GD) {
   GD.interactionNetworkAjax = function(currentRow, pathId) {
     $('#modal_header_text').text('Loading Graphics for GeneSet: ' + pathId);
     $('#modal_text').text('This should take a few seconds. Please leave this page open');
-    $('#loading_modal').openModal({ dismissible: false});
+    $('#loading_modal').modal({ dismissible: false});
+    $('#loading_modal').modal('open');
     var resultId = currentRow.closest('.results_card').data('result');
     var geoDb    = currentRow.closest('.results_card').data('geodb');
     var user     = currentRow.closest('.results_card').data('user');
@@ -205,7 +208,7 @@ if (!GD) {
       success: function(response) {
         currentRow.addClass('parent');
         currentRow.after(response);
-        $('#loading_modal').closeModal();
+        $('#loading_modal').modal('close');
       },
       error: function(e, status) {
         GD.ajaxError(e, status);
@@ -218,12 +221,12 @@ if (!GD) {
       errorMessage = e.responseText;
       $('#results_section').show();
       $('#results_section').html(errorMessage);
-      $('#loading_modal').closeModal(); // remove progress notification
+      $('#loading_modal').modal('close'); // remove progress notification
     } else {
       errorMessage = e.responseText;
       $('#results_section').show();
       $('#results_section').html('<div class="card red lighten-2" role="alert"><div class="card-content white-text"><h3>Oops! GeoDiver is Drowning!</h3><p style="font-size: 1.5rem"><strong>Apologies, there was an error with your request. Please try again.</strong></p><p>Error Message:' + ' The server responded with the status code: ' + String(e.status) + '. Please refresh the page and try again.</p><p>If the error persists, please contact the administrator.</p></div></div>');
-      $('#loading_modal').closeModal(); // remove progress notification
+      $('#loading_modal').modal('close'); // remove progress notification
     }
   };
 
@@ -423,13 +426,14 @@ if (!GD) {
     $('#' + tableWrapperId).on('click', '.download-top-table', function() {
         $('#modal_header_text').text('Creating Download Link');
         $('#modal_text').text('This should take a few seconds. Please leave this page open');
-        $('#loading_modal').openModal({ dismissible: false});
+        $('#loading_modal').modal({ dismissible: false});
+        $('#loading_modal').modal('open');
         $.fileDownload($(this).attr('href'), {
             successCallback: function(url) {
-              $('#loading_modal').closeModal();
+              $('#loading_modal').modal('close');
             },
             failCallback: function(responseHtml, url) {
-              $('#loading_modal').closeModal();
+              $('#loading_modal').modal('close');
             }
         });
         return false; //this is critical to stop the click event which will trigger a normal file download!
@@ -541,23 +545,24 @@ if (!GD) {
       event.preventDefault();
       $('#modal_header_text').text('Creating Download Link');
       $('#modal_text').text('This should take a few seconds. Please leave this page open');
-      $('#loading_modal').openModal({ dismissible: false});
+      $('#loading_modal').modal({ dismissible: false});
+      $('#loading_modal').modal('open');
       $.fileDownload($(this).data('download'), {
           successCallback: function(url) {
-            $('#loading_modal').closeModal();
+            $('#loading_modal').modal('close');
           },
           failCallback: function(responseHtml, url) {
-            $('#loading_modal').closeModal();
+            $('#loading_modal').modal('close');
           }
       });
-      $('#loading_modal').closeModal();
+      $('#loading_modal').modal('close');
       return false; //this is critical to stop the click event which will trigger a normal file download!
     });
   };
 
   GD.delete_result = function () {
     $('#results_section').on('click', '#delete_results', function(event) {
-      $('#delete_modal').openModal();
+      $('#delete_modal').modal('open');
       var resultId = $(this).closest('.card').data('result');
       var geoDb =  $(this).closest('.card').data('geodb');
       $('#delete_modal').attr('data-result', resultId);
@@ -567,7 +572,8 @@ if (!GD) {
     $('.delete-results').click(function(event) {
       $('#modal_header_text').text('Deleting Result');
       $('#modal_text').text('This should take a few seconds. Please leave this page open');
-      $('#loading_modal').openModal({ dismissible: false});
+      $('#loading_modal').modal({ dismissible: false});
+      $('#loading_modal').modal('open');
       var resultId = $('#delete_modal').data('result');
       var geoDb =  $('#delete_modal').data('geodb');
       $.ajax({
@@ -666,6 +672,7 @@ if (!GD) {
   $(function() {
     $('.button-collapse').sideNav();
     $('select').material_select();
+    $('#login_modal').modal();
     if ($('#load_geo_db').length) {
       GD.setUpValidatorDefaults();
       GD.loadGeoDbValidation();
