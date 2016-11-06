@@ -39,12 +39,10 @@ parser <- add_argument(parser, "--analyse", nargs = "+",
                        help = "List of analysis to be performed")
 parser <- add_argument(parser, "--geodbpath",
                        help = "GEO Dataset full path")
-parser <- add_argument(parser, "--dev",
-                       help = "The output directory where graphs get saved")
+parser <- add_argument(parser, "--dev", flag = TRUE, short = '-d',
+                       help = "verbose version")
 
 # Sample Parameters
-parser <- add_argument(parser, "--accession",
-                       help = "Accession Number of the GEO Database")
 parser <- add_argument(parser, "--factor",
                        help = "Factor type to be classified by")
 parser <- add_argument(parser, "--popA", nargs = "+",
@@ -63,10 +61,11 @@ argv   <- parse_args(parser)
 #                        Command Line Arguments Retrieval                   #
 #############################################################################
 split_arg <- function(vector_arg) {
-  pos <- unlist(gregexpr("[^\\\\],", vector_arg, perl=TRUE))
+  pos  <- unlist(gregexpr("[^\\\\],", vector_arg, perl=TRUE))
   vect <- substring(vector_arg, c(1, pos+2), c(pos, nchar(vector_arg)))
   vect <- gsub("\\\\,", ",", vect) # replace \\, with ,
-  vect <- gsub("\\\"", '"', vect) #replace \" with "
+  vect <- gsub("\\\"", '"', vect) # replace \" with "
+  vect <- gsub('\\\\-', '-', vect) # replace \\- with -
   return (vect)
 }
 
@@ -84,29 +83,21 @@ pop.name2       <- argv$popname2
 pop.colour1     <- "#e199ff" # Purple
 pop.colour2     <- "#96ca00" # Green
 
-if (!is.na(argv$dev)) {
-  isdebug <- argv$dev
-} else {
-  isdebug <- FALSE
-}
+isdebug <- argv$dev
 
 #############################################################################
 #                          Load Functions                                   #
 #############################################################################
 
-# auto-detect if data is log transformed
-scalable <- function(X) {
-  #  produce sample quantiles corresponding to the given probabilities
-  qx <- as.numeric(quantile(X, c(0.0, 0.25, 0.5, 0.75, 0.99, 1.0), na.rm = T))
-  logc <- (qx[5] > 100) ||
-      (qx[6] - qx[1] > 50 && qx[2] > 0) ||
-      (qx[2] > 0 && qx[2] < 1 && qx[4] > 1 && qx[4] < 2)
-  return (logc)
+# Check if the run directory exists and if not, create directory...
+check.run.dir <- function(run.dir) {
+  if (!dir.exists(file.path(run.dir))) {
+    dir.create(file.path(run.dir))
+  }
 }
 
 # Boxplot
-samples.boxplot <- function(data, pop.colours, pop.names, path){
-
+samples.boxplot <- function(data, pop.colours, pop.names, path) {
   boxplot <- ggplot(data) + geom_boxplot(aes(x = Var2, y = value, colour = Groups), outlier.shape = NA) + theme(axis.text.x = element_text(angle = 70, hjust = 1), legend.position = "right")+ labs(x = "Samples", y = "Expression Levels") + scale_color_manual(name = "Groups", values = pop.colours, labels = pop.names)
 
   # compute lower and upper whiskers to set the y axis margin
@@ -115,14 +106,14 @@ samples.boxplot <- function(data, pop.colours, pop.names, path){
   # scale y limits based on ylim1
   boxplot <- boxplot + coord_cartesian(ylim = ylim1*1.05)
 
-  filename <- paste(path, "boxplot.png", sep = "")
+  filename <- file.path(path, "boxplot.png")
   ggsave(filename, plot = boxplot, width = 8, height = 4)
 
   if (isdebug) print("Overview: Boxplot has been produced")
 }
 
 # Principal Component Analysis
-get.pcdata <- function(Xpca){
+get.pcdata <- function(Xpca) {
   s <- summary(Xpca)
 
   exp.var <- s$importance[2, ] * 100 # Explained Variance in percentages
@@ -137,13 +128,11 @@ get.pcdata <- function(Xpca){
   return(results)
 }
 
-get.pcplotdata <- function(Xpca, populations){
-
-  Xscores <- Xpca$x
-
-  sample.names <- rownames(Xscores)
+get.pcplotdata <- function(Xpca, populations) {
+  Xscores           <- Xpca$x
+  sample.names      <- rownames(Xscores)
   rownames(Xscores) <- NULL
-  cols <- colnames(Xscores)
+  cols              <- colnames(Xscores)
 
   # Take each column of Xscore (as temp variable y) and split based on the population
   Xscores <- lapply(1:nrow(Xscores),
@@ -151,10 +140,10 @@ get.pcplotdata <- function(Xpca, populations){
   names(Xscores) <- cols
 
   # Unlist them but not to the dept. outer most list has unlisted
-  pc <- unlist(Xscores, recursive = FALSE)
+  pc             <- unlist(Xscores, recursive = FALSE)
 
   # Split sample names by population and add to the final list
-  complete.data <- c(split(sample.names, populations),pc)
+  complete.data  <- c(split(sample.names, populations),pc)
 
   if (isdebug) print("Overview: PCA has been calculated")
   return(complete.data)
@@ -165,59 +154,21 @@ get.pcplotdata <- function(Xpca, populations){
 #                        Load GEO Dataset to Start Analysis                 #
 #############################################################################
 
-if(isdebug){
-  print("Overview: GeoDiver is starting")
-  print("Overview: Libraries have been loaded")
-}
-
-if (file.exists(dbrdata)){
+if (file.exists(dbrdata)) {
+  if (isdebug) print("Overview: Loading Database data.")
   load(file = dbrdata)
 } else {
-  tryCatch({
-    # Automatically Load GEO dataset
-    gse <- getGEO(accession, GSEMatrix = TRUE)
-
-    # Convert into ExpressionSet Object
-    eset <- GDS2eSet(gse, do.log2 = FALSE)
-  },error=function(e){
-      print("ERROR:Data input error. Provide valid GDS dataset!")
-      # Exit with error code 1
-      quit(save = "no", status = 1, runLast = FALSE)
-  })
+  cat("ERROR: Data input error. Provide valid GDS dataset!", file=stderr())
+  quit(save = "no", status = 200, runLast = FALSE)
 }
 
-#############################################################################
-#                           Data Preprocessing                              #
-#############################################################################
-
-X <- exprs(eset)  # Get Expression Data
-
-# Replace missing value with calculated KNN value 
-tryCatch({
-    X <- knnImputation(X)
-},error=function(e){
-    print("ERROR:Analyse cannot be performed due to bad dataset! Contain plenty of missing values!")
-    # Exit with error code 1
-    quit(save = "no", status = 1, runLast = FALSE)
-})
-
-# If not log transformed, do the log2 transformed
-if (scalable(X)) {
-  X[which(X <= 0)] <- NaN # not possible to log transform negative numbers
-  X <- log2(X)
-}
-
-if (isdebug) print("Overview: Data Preprocessed!")
+check.run.dir(run.dir)
 
 #############################################################################
 #                        Two Population Preparation                         #
 #############################################################################
-# Store gene names
-gene.names      <- as.character(gse@dataTable@table$IDENTIFIER)
-rownames(X)     <- gene.names
-
 # Phenotype selection
-pclass           <- pData(eset)[factor.type]
+pclass           <- pData[factor.type]
 colnames(pclass) <- "factor.type"
 
 # Create a data frame with the factors
@@ -256,28 +207,22 @@ if (isdebug) print("Overview: Factors and Populations have been set")
 
 json.list <- list()
 
-if ("Boxplot" %in% analysis.list){
+if ("Boxplot" %in% analysis.list) {
   samples.boxplot(data, c(pop.colour2, pop.colour1),
                   c(pop.name2, pop.name1), path = run.dir)
 }
 
-if ("PCA" %in% analysis.list){
-
-  Xpca <- prcomp(t(X), scale = TRUE)
-
-  # PC individual and cumulative values
-  pcdata <- get.pcdata(Xpca)
-  json.list <- append(json.list, list(pc = pcdata))
-
+if ("PCA" %in% analysis.list) {
+  Xpca       <- prcomp(t(X))
+  pcdata     <- get.pcdata(Xpca) # PC individual and cumulative values
+  json.list  <- append(json.list, list(pc = pcdata))
   # PC scatter plot
   pcplotdata <- get.pcplotdata(Xpca, expression.info[, "population"])
-
-  # adding both data to the json list
-  json.list <- append(json.list, list(pcdata = pcplotdata))
+  json.list  <- append(json.list, list(pcdata = pcplotdata)) # add to json list
 }
 
 if (length(json.list) != 0) {
   # Write to a json file with 4 decimal places
-  filename <- paste(run.dir, "data.json", sep = "")
+  filename <- file.path(run.dir, "data.json")
   write(toJSON(json.list, digits=I(4)), filename )
 }

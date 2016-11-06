@@ -17,6 +17,7 @@ biocLite("GO.db")
 biocLite("pathview")
 biocLite("limma")
 biocLite("org.Mm.eg.db")
+biocLite('impute')
 install.packages("argparser")
 install.packages("Cairo")
 install.packages("dendextend")
@@ -44,6 +45,7 @@ install.packages("squash")
 # argparser     - https://cran.r-project.org/web/packages/argparser/index.html
 # Cairo         - https://cran.r-project.org/web/packages/Cairo/index.html
 # dendextend    - https://cran.r-project.org/web/packages/dendextend/index.html
+# impute        - http://svitsrv25.epfl.ch/R-doc/library/impute/html/impute.knn.html
 # DMwR          - https://cran.r-project.org/web/packages/DMwR/index.html
 # ggplot2       - https://cran.r-project.org/web/packages/ggplot2/index.html
 # gplots        - https://cran.r-project.org/web/packages/gplots/index.html

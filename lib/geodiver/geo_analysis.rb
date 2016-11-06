@@ -144,11 +144,11 @@ module GeoDiver
         "Rscript #{File.join(GeoDiver.root, 'RCore/overview.R')}" \
         " --dbrdata #{dbrdata} --rundir '#{@run_dir}/'" \
         " --analyse 'Boxplot,PCA'" \
-        " --accession #{@params['geo_db']} --factor \"#{@params['factor']}\"" \
+        " --factor \"#{@params['factor']}\"" \
         " --popA \"#{to_comma_delimited_string(@params['groupa'])}\"" \
         " --popB \"#{to_comma_delimited_string(@params['groupb'])}\"" \
         " --popname1 'Group1' --popname2 'Group2'" \
-        ' --dev TRUE'
+        ' --dev'
       end
 
       #
@@ -156,7 +156,7 @@ module GeoDiver
         "Rscript #{File.join(GeoDiver.root, 'RCore/dgea.R')}" \
         " --dbrdata #{dbrdata} --rundir '#{@run_dir}/'" \
         " --analyse '#{analyses_to_carry_out.join(',')}'" \
-        " --accession #{@params['geo_db']} --factor \"#{@params['factor']}\"" \
+        " --factor \"#{@params['factor']}\"" \
         " --popA \"#{to_comma_delimited_string(@params['groupa'])}\"" \
         " --popB \"#{to_comma_delimited_string(@params['groupb'])}\"" \
         " --popname1 'Group1' --popname2 'Group2'" \
@@ -167,15 +167,15 @@ module GeoDiver
         " --clusterby '#{dgea_clusterby_method}'" \
         " --heatmaprows #{@params['dgea_heatmap_rows']} " \
         " --adjmethod '#{@params['dgea_volcano_pValue_cutoff']}'" \
-        " --dendrow #{(@params['dgea_cluster_by_genes'] == 'on')} "\
-        " --dendcol #{(@params['dgea_cluster_by_samples'] == 'on')} "\
-        ' --dev TRUE'
+        " #{option_to_flag(@params['gsea_cluster_by_genes'], '--dendrow')}" \
+        " #{option_to_flag(@params['gsea_cluster_by_samples'], '--dendcol')}" \
+        ' --dev'
       end
 
       def gsea_cmd
         "Rscript #{File.join(GeoDiver.root, 'RCore/gage.R')}" \
         " --dbrdata #{dbrdata} --rundir '#{@run_dir}/'" \
-        " --accession #{@params['geo_db']} --factor \"#{@params['factor']}\"" \
+        " --factor \"#{@params['factor']}\"" \
         " --popA \"#{to_comma_delimited_string(@params['groupa'])}\"" \
         " --popB \"#{to_comma_delimited_string(@params['groupb'])}\"" \
         " --comparisontype '#{@params['gsea_type']}'"\
@@ -184,9 +184,9 @@ module GeoDiver
         " --clustering '#{@params['gsea_heatmap_clustering_method']}'" \
         " --clusterby '#{gage_clusterby_method}'" \
         " --heatmaprows #{@params['gsea_heatmap_rows']} " \
-        " --dendrow #{(@params['gsea_cluster_by_genes'] == 'on')} "\
-        " --dendcol #{(@params['gsea_cluster_by_samples'] == 'on')} "\
-        ' --dev TRUE'
+        " #{option_to_flag(@params['gsea_cluster_by_genes'], '--dendrow')}" \
+        " #{option_to_flag(@params['gsea_cluster_by_samples'], '--dendcol')}" \
+        ' --dev'
       end
 
       def compress_files(run_dir, geodb)
@@ -219,6 +219,10 @@ module GeoDiver
 
       def gage_clusterby_method
         (@params['gsea_cluster_based_on'] == 'on') ? 'Complete' : 'Toptable'
+      end
+
+      def option_to_flag(option, return_flag)
+        return_flag if option == 'on'
       end
 
       def dbrdata
