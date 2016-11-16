@@ -645,6 +645,25 @@ if (!GD) {
       });
     });
   };
+
+  GD.ensureOnlyOneSelectOption = function (currentSelect, alternativeSelect) {
+    $(currentSelect).on('change', function(e) {
+      array = $(alternativeSelect).siblings('ul').children('li');
+      for (var i = 2; i < array.length +1; i++) {
+        $(array[i]).prop('disabled', false);
+        $(alternativeSelect).siblings('ul').children('li:nth-child('+ i +')').removeClass('disabled');
+        $(alternativeSelect).siblings('ul').children('li:nth-child('+ i +')').find('input:checkbox').prop('disabled', false);
+      }
+      var valueArray = $(currentSelect).val();
+      $.each(valueArray, function(v){
+        selector = alternativeSelect + ' option[value=' + valueArray[v] + ']';
+        $(selector).prop('disabled', true);
+        valueIndex = $(selector).index() + 1;
+        $(alternativeSelect).siblings('ul').children('li:nth-child('+ valueIndex +')').addClass('disabled');
+        $(alternativeSelect).siblings('ul').children('li:nth-child('+ valueIndex +')').find('input:checkbox').prop('disabled', true);
+      });
+    });
+  };
 }());
 
 (function($) {
@@ -672,6 +691,8 @@ if (!GD) {
   $(function() {
     $('.button-collapse').sideNav();
     $('select').material_select();
+    GD.ensureOnlyOneSelectOption('#groupaSelect', '#groupbSelect');
+    GD.ensureOnlyOneSelectOption('#groupbSelect', '#groupaSelect');
     $('#login_modal').modal();
     if ($('#load_geo_db').length) {
       GD.setUpValidatorDefaults();

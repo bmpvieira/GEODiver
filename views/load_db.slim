@@ -23,14 +23,14 @@
       - @geo_db_results['Factors'].each do |factor, phenotypes|
         .select_factors id="#{factor.gsub(/[\/\\\.\:\#\s]/, '_')}_select" style="display:none;"
           .input-field.col.s12.m6
-            select multiple="" name="groupa[]" 
+            select#groupaSelect multiple="" name="groupa[]"
               option disabled="" selected="" value=""  Choose your option(s) (Group A)
               - phenotypes.each do |p|
                 option value="#{p}"
                   | #{p.split(/[\s]/).map(&:capitalize).join(' ')}
             label  Group A
           .input-field.col.s12.m6
-            select multiple="" name="groupb[]"
+            select#groupbSelect multiple="" name="groupb[]"
               option disabled="" selected="" value=""  Choose your option(s)  (Group B)
               - phenotypes.each do |p|
                 option  value="#{p}"
