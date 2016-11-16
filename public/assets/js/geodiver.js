@@ -98,8 +98,7 @@ if (!GD) {
                 $('#groupb_params').tooltip({delay: 50});
               }
             });
-            GD.ensureOnlyOneSelectOption('#groupaSelect', '#groupbSelect');
-            GD.ensureOnlyOneSelectOption('#groupbSelect', '#groupaSelect');
+            GD.ensureOnlyOneSelectOption();
             GD.addAdvParamLogic();
             GD.addFactorToggle();
             $('select').material_select();
@@ -494,6 +493,7 @@ if (!GD) {
       $('#groupa_params').tooltip({delay: 50});
       $('#groupb_params').attr('data-tooltip', 'This is Group B' );
       $('#groupb_params').tooltip({delay: 50});
+      GD.ensureOnlyOneSelectOption();
     });
   };
 
@@ -647,21 +647,35 @@ if (!GD) {
     });
   };
 
-  GD.ensureOnlyOneSelectOption = function (currentSelect, alternativeSelect) {
-    $(currentSelect).on('change', function(e) {
-      array = $(alternativeSelect).siblings('ul').children('li');
-      for (var i = 2; i < array.length +1; i++) {
-        $(array[i]).prop('disabled', false);
-        $(alternativeSelect).siblings('ul').children('li:nth-child('+ i +')').removeClass('disabled');
-        $(alternativeSelect).siblings('ul').children('li:nth-child('+ i +')').find('input:checkbox').prop('disabled', false);
-      }
-      var valueArray = $(currentSelect).val();
-      $.each(valueArray, function(v){
-        selector = alternativeSelect + " option[value='" + valueArray[v] + "']";
+  GD.ensureOnlyOneSelectOption = function() {
+    $('.select_factors:visible select[name="groupa[]"], .select_factors:visible select[name="groupb[]"]').on('change', function(e) {
+      // RESET both arrays
+      $('.select_factors:visible select[name="groupa[]"]').siblings('ul').children('li').not(':first-child').prop('disabled', false);
+      $('.select_factors:visible select[name="groupa[]"]').siblings('ul').children('li').not(':first-child').removeClass('disabled');
+      $('.select_factors:visible select[name="groupa[]"]').siblings('ul').children('li').not(':first-child').find('input:checkbox').prop('disabled', false);
+      $('.select_factors:visible select[name="groupa[]"]').children().not(':first-child').prop('disabled', false);
+
+      $('.select_factors:visible select[name="groupb[]"]').siblings('ul').children('li').not(':first-child').prop('disabled', false);
+      $('.select_factors:visible select[name="groupb[]"]').siblings('ul').children('li').not(':first-child').removeClass('disabled');
+      $('.select_factors:visible select[name="groupb[]"]').siblings('ul').children('li').not(':first-child').find('input:checkbox').prop('disabled', false);
+      $('.select_factors:visible select[name="groupb[]"]').children().not(':first-child').prop('disabled', false);
+
+      aValues = $('.select_factors:visible select[name="groupa[]"]').val();
+      bValues = $('.select_factors:visible select[name="groupb[]"]').val();
+
+      $.each(aValues, function(i){
+        selector = '.select_factors:visible select[name="groupb[]"] option[value="' + aValues[i] + '"]';
         $(selector).prop('disabled', true);
         valueIndex = $(selector).index() + 1;
-        $(alternativeSelect).siblings('ul').children('li:nth-child('+ valueIndex +')').addClass('disabled');
-        $(alternativeSelect).siblings('ul').children('li:nth-child('+ valueIndex +')').find('input:checkbox').prop('disabled', true);
+        $('.select_factors:visible select[name="groupb[]"]').siblings('ul').children('li:nth-child('+ valueIndex +')').addClass('disabled');
+        $('.select_factors:visible select[name="groupb[]"]').siblings('ul').children('li:nth-child('+ valueIndex +')').find('input:checkbox').prop('disabled', true);
+      });
+      $.each(bValues, function(i){
+        selector = '.select_factors:visible select[name="groupa[]"] option[value="' + bValues[i] + '"]';
+        $(selector).prop('disabled', true);
+        valueIndex = $(selector).index() + 1;
+        $('.select_factors:visible select[name="groupa[]"]').siblings('ul').children('li:nth-child('+ valueIndex +')').addClass('disabled');
+        $('.select_factors:visible select[name="groupa[]"]').siblings('ul').children('li:nth-child('+ valueIndex +')').find('input:checkbox').prop('disabled', true);
       });
     });
   };
