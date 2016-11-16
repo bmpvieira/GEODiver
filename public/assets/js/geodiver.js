@@ -98,7 +98,8 @@ if (!GD) {
                 $('#groupb_params').tooltip({delay: 50});
               }
             });
-
+            GD.ensureOnlyOneSelectOption('#groupaSelect', '#groupbSelect');
+            GD.ensureOnlyOneSelectOption('#groupbSelect', '#groupaSelect');
             GD.addAdvParamLogic();
             GD.addFactorToggle();
             $('select').material_select();
@@ -656,7 +657,7 @@ if (!GD) {
       }
       var valueArray = $(currentSelect).val();
       $.each(valueArray, function(v){
-        selector = alternativeSelect + ' option[value=' + valueArray[v] + ']';
+        selector = alternativeSelect + " option[value='" + valueArray[v] + "']";
         $(selector).prop('disabled', true);
         valueIndex = $(selector).index() + 1;
         $(alternativeSelect).siblings('ul').children('li:nth-child('+ valueIndex +')').addClass('disabled');
@@ -691,8 +692,6 @@ if (!GD) {
   $(function() {
     $('.button-collapse').sideNav();
     $('select').material_select();
-    GD.ensureOnlyOneSelectOption('#groupaSelect', '#groupbSelect');
-    GD.ensureOnlyOneSelectOption('#groupbSelect', '#groupaSelect');
     $('#login_modal').modal();
     if ($('#load_geo_db').length) {
       GD.setUpValidatorDefaults();
