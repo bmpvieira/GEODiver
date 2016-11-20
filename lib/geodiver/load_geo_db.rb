@@ -78,17 +78,27 @@ module GeoDiver
       def download_and_parse_meta_data(geo_accession)
         file = download_geo_file(geo_accession)
         data = read_geo_file(file)
-        parse_geo_db(data)
+        if geo_accession =~ /^GDS/
+          return parse_gds_db(data)
+        elsif geo_accession =~ /^GSE/
+          return parse_gse_db(data)
+        end
       rescue
         raise ArgumentError, 'GeoDiver was unable to download the GEO Database'
       end
 
       #
       def download_geo_file(geo_accession)
-        remote_dir = generate_remote_url(geo_accession)
+        if geo_accession =~ /^GDS/
+          remote_dir = generate_remote_gds_url(geo_accession)
+          file = "#{geo_accession}.soft.gz"
+        elsif geo_accession =~ /^GSE/
+          remote_dir = generate_remote_gse_url(geo_accession)
+          file = "#{geo_accession}_series_matrix.txt.gz"
+        end
         output_dir = File.join(db_dir, geo_accession)
         FileUtils.mkdir(output_dir) unless Dir.exist? output_dir
-        compressed = File.join(output_dir, "#{geo_accession}.soft.gz")
+        compressed = File.join(output_dir, file)
         logger.debug("Downloading from: #{remote_dir} ==> #{compressed}")
         `wget #{remote_dir} --output-document #{compressed}`
         logger.debug("Uncompressing file: #{compressed.gsub('.gz', '')}")
@@ -97,7 +107,7 @@ module GeoDiver
       end
 
       #
-      def generate_remote_url(geo_accession)
+      def generate_remote_gds_url(geo_accession)
         if geo_accession.length == 6
           remote_dir = 'ftp://ftp.ncbi.nlm.nih.gov//geo/datasets/GDSnnn/' \
                        "#{geo_accession}/soft/#{geo_accession}.soft.gz"
@@ -106,6 +116,26 @@ module GeoDiver
           remote_dir = 'ftp://ftp.ncbi.nlm.nih.gov//geo/datasets/' \
                        "GDS#{dir_number}nnn/#{geo_accession}/soft/" \
                        "#{geo_accession}.soft.gz"
+        end
+        remote_dir
+      end
+
+      def generate_remote_gse_url(geo_accession)
+        if geo_accession.length == 6
+          remote_dir = 'ftp://ftp.ncbi.nlm.nih.gov//geo/series/GSEnnn/' \
+                       "#{geo_accession}/matrix/" \
+                       "#{geo_accession}_series_matrix.txt.gz"
+        elsif geo_accession.length == 7
+          dir_number = geo_accession.match(/GSE(\d)\d+/)[1]
+          remote_dir = 'ftp://ftp.ncbi.nlm.nih.gov//geo/series/' \
+                       "GSE#{dir_number}nnn/#{geo_accession}/matrix/" \
+                       "#{geo_accession}_series_matrix.txt.gz"
+        elsif geo_accession.length == 8
+          dir_number = geo_accession.match(/GSE(\d\d)\d+/)[1]
+          remote_dir = 'ftp://ftp.ncbi.nlm.nih.gov//geo/series/' \
+                       "GSE#{dir_number}nnn/#{geo_accession}/matrix/" \
+                       "#{geo_accession}_series_matrix.txt.gz"
+
         end
         remote_dir
       end
@@ -122,29 +152,71 @@ module GeoDiver
       end
 
       #
-      def parse_geo_db(d)
+      def parse_gds_db(d)
         {
           'Accession' => d.match(/\^DATASET = (.*)/)[1],
           'Title' => d.match(/!dataset_title = (.*)/)[1],
           'Description' => d.match(/!dataset_description = (.*)/)[1],
           'Sample_Organism' => d.match(/!dataset_platform_organism = (.*)/)[1],
-          'Factors' => parse_factors(d),
+          'Factors' => parse_gds_factors(d),
           'Reference' => d.match(/!Database_ref = (.*)/)[1],
           'Update_Date' => d.match(/!dataset_update_date = (.*)/)[1]
         }
       end
 
+      def parse_gse_db(d)
+        {
+          'Accession' => d.match(/!Series_geo_accession\t"(.*)"/)[1],
+          'Title' => d.match(/!Series_title\t"(.*)"/)[1],
+          'Description' => d.match(/!Series_summary\t"(.*)"/)[1],
+          'Sample_Organism' => parse_sample_organism(d),
+          'Factors' => parse_gse_factors(d),
+          'Reference' => d.match(/!Series_relation\t"(.*)"/)[1],
+          'Update_Date' => d.match(/!Series_last_update_date\t"(.*)"/)[1]
+        }
+      end
+
       #
-      def parse_factors(data)
+      def parse_gds_factors(data)
         subsets = data.gsub(/\^DATA.*\n/, '').gsub(/\![dD]ata.*\n/, '')
-        results = {}
+        factors = {}
         subsets.lines.each_slice(5) do |subset|
           desc = subset[2].match(/\!subset_description = (.*)/)[1]
           type = subset[4].match(/\!subset_type = (.*)/)[1].gsub(' ', '.')
-          results[type] ||= []
-          results[type] << desc
+          factors[type] ||= {}
+          factors[type]['options'] ||= []
+          factors[type]['options'] << desc
+          factors[type]['value'] = type
         end
-        results
+        factors
+      end
+
+      def parse_gse_factors(data)
+        subsets = data.scan(/!Sample_characteristics_ch1\t(.*)/)
+        factors = {}
+        subsets.each_with_index do |feature, idx|
+          a = feature[0].split(/\"?\t?\"/)
+          a.delete_if { |e| e =~ /^\s+$/ || e.empty? }
+          a.each do |e|
+            split = e.split(': ')
+            type = split[0]
+            factors[type] ||= {}
+            factors[type]['value'] = "characteristics_ch1"
+            factors[type]['value'] += ".#{idx}" if idx > 0
+            factors[type]['options'] ||= []
+            factors[type]['options'] << e
+          end
+        end
+        factors.each { |_, e| e['options'].uniq! }
+        factors.delete_if { |_, e| e['options'].size == 1 }
+        factors
+      end
+
+      def parse_sample_organism(data)
+        subset = data.match(/!Sample_organism_ch1\t(.*)/)[1]
+        organism = subset.split(/\"?\t?\"/)
+        organism.shift
+        organism.uniq
       end
 
       #
@@ -165,11 +237,16 @@ module GeoDiver
 
       #
       def load_geo_db_cmd(geo_accession)
+        if geo_accession =~ /^GDS/
+          filename = "#{geo_accession}.soft.gz"
+        elsif geo_accession =~ /^GSE/
+          filename = "#{geo_accession}_series_matrix.txt.gz"
+        end
         geo_db_dir = File.join(db_dir, geo_accession)
         "Rscript #{File.join(GeoDiver.root, 'RCore/download_GEO.R')}" \
         " --accession #{geo_accession}" \
-        " --geodbpath #{File.join(geo_db_dir, "#{geo_accession}.soft.gz")}"\
         " --outrdata  #{File.join(geo_db_dir, "#{geo_accession}.RData")}" \
+        " --geodbDir #{geo_db_dir}" \
         " && echo 'Finished creating Rdata file:" \
         " #{File.join(geo_db_dir, "#{geo_accession}.RData")}'"
       end
