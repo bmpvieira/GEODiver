@@ -124,7 +124,7 @@ module GeoDiver
 
     # Generate the Interaction Netwoks
     post '/interaction_image' do
-      email            =  Base64.decode64(params[:user])
+      email            = Base64.decode64(params[:user])
       @interaction_img = GeoAnalysisHelper.create_interactions(params, email)
       slim :interactionNetwork, layout: false
     end
@@ -148,14 +148,14 @@ module GeoDiver
       share = File.join(GeoDiver.public_dir, 'GeoDiver/Share', email,
                         params['geo_db'], params['time'])
       FileUtils.rm_r(share) if File.exist? share
-      share_file  = File.join(GeoDiver.users_dir, email, params['geo_db'],
-                              params['time'], '.share')
+      share_file = File.join(GeoDiver.users_dir, email, params['geo_db'],
+                             params['time'], '.share')
       FileUtils.rm(share_file) if File.exist? share_file
     end
 
     # Delete a Results Page
     post '/delete_result' do
-      email = (session[:user].nil?) ? 'docsnap' : session[:user].info['email']
+      email = session[:user].nil? ? 'docsnap' : session[:user].info['email']
       @results_url = File.join(GeoDiver.users_dir, email, params['geo_db'],
                                params['result_id'])
       FileUtils.rm_r @results_url if Dir.exist? @results_url

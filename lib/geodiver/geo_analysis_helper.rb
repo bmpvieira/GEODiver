@@ -46,7 +46,7 @@ module GeoDiver
       def assert_gene_id_present(params)
         logger.debug('Asserting Gene ID is present.')
         return unless params['gene_id'].nil? || params['gene_id'].empty?
-        fail ArgumentError, 'No Gene Id provided.'
+        raise ArgumentError, 'No Gene Id provided.'
       end
 
       def run_expression_analysis(params, email)

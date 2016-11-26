@@ -85,7 +85,7 @@ module GeoDiver
       def assert_geo_db_present
         logger.debug('Asserting GEO db is present.')
         return unless @params['geo_db'].nil? || @params['geo_db'].empty?
-        fail ArgumentError, 'No GEO database provided.'
+        raise ArgumentError, 'No GEO database provided.'
       end
 
       #
@@ -194,12 +194,10 @@ module GeoDiver
       def compress_files(run_dir, geodb)
         cmd = "zip -jr '#{run_dir}/#{geodb}_geodiver_results.zip' '#{run_dir}'"
         logger.debug("Running CMD: #{cmd}")
-        system("#{cmd}")
+        system(cmd)
       end
 
       def compress_svg_files(run_dir)
-        dgea_svg_file = 
-        gage_svg_file = 
         compress_svg(File.join(run_dir, 'dgea_heatmap.svg'))
         compress_svg(File.join(run_dir, 'gage_heatmap.svg'))
       end
@@ -207,8 +205,8 @@ module GeoDiver
       def compress_svg(input)
         return unless File.exist?(input)
         cmd = "svgo #{input} #{input}.temp"
-        system("#{cmd}")
-        FileUtils.mv("#{input}.temp", input, :force => true)
+        system(cmd)
+        FileUtils.mv("#{input}.temp", input, force: true)
       end
 
       def analyses_to_carry_out
@@ -230,11 +228,11 @@ module GeoDiver
       end
 
       def dgea_clusterby_method
-        (@params['dgea_cluster_based_on'] == 'on') ? 'Complete' : 'Toptable'
+        @params['dgea_cluster_based_on'] == 'on' ? 'Complete' : 'Toptable'
       end
 
       def gage_clusterby_method
-        (@params['gsea_cluster_based_on'] == 'on') ? 'Complete' : 'Toptable'
+        @params['gsea_cluster_based_on'] == 'on' ? 'Complete' : 'Toptable'
       end
 
       def option_to_flag(option, return_flag)

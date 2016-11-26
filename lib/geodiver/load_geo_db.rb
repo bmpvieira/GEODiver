@@ -65,7 +65,7 @@ module GeoDiver
       def assert_geo_db_present(params)
         logger.debug('Checking if the GEO DB parameter is present.')
         return unless params['geo_db'].nil? || params['geo_db'].empty?
-        fail ArgumentError, 'No GEO database provided.'
+        raise ArgumentError, 'No GEO database provided.'
       end
 
       def parse_meta_data(meta_json_file)
@@ -78,11 +78,8 @@ module GeoDiver
       def download_and_parse_meta_data(geo_accession)
         file = download_geo_file(geo_accession)
         data = read_geo_file(file)
-        if geo_accession =~ /^GDS/
-          return parse_gds_db(data)
-        elsif geo_accession =~ /^GSE/
-          return parse_gse_db(data)
-        end
+        return parse_gds_db(data) if geo_accession =~ /^GDS/
+        return parse_gse_db(data) if geo_accession =~ /^GSE/
       rescue
         raise ArgumentError, 'GeoDiver was unable to download the GEO Database'
       end
@@ -182,7 +179,7 @@ module GeoDiver
         factors = {}
         subsets.lines.each_slice(5) do |subset|
           desc = subset[2].match(/\!subset_description = (.*)/)[1]
-          type = subset[4].match(/\!subset_type = (.*)/)[1].gsub(' ', '.')
+          type = subset[4].match(/\!subset_type = (.*)/)[1].tr(' ', '.')
           factors[type] ||= {}
           factors[type]['options'] ||= []
           factors[type]['options'] << desc
@@ -201,7 +198,7 @@ module GeoDiver
             split = e.split(': ')
             type = split[0]
             factors[type] ||= {}
-            factors[type]['value'] = "characteristics_ch1"
+            factors[type]['value'] = 'characteristics_ch1'
             factors[type]['value'] += ".#{idx}" if idx > 0
             factors[type]['options'] ||= []
             factors[type]['options'] << e
@@ -237,11 +234,6 @@ module GeoDiver
 
       #
       def load_geo_db_cmd(geo_accession)
-        if geo_accession =~ /^GDS/
-          filename = "#{geo_accession}.soft.gz"
-        elsif geo_accession =~ /^GSE/
-          filename = "#{geo_accession}_series_matrix.txt.gz"
-        end
         geo_db_dir = File.join(db_dir, geo_accession)
         "Rscript #{File.join(GeoDiver.root, 'RCore/download_GEO.R')}" \
         " --accession #{geo_accession}" \
