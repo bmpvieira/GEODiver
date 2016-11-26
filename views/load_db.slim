@@ -27,14 +27,20 @@
               option disabled="" selected="" value=""  Choose your option(s) (Group A)
               - phenotypes['options'].each do |p|
                 option value="#{p}"
-                  | #{p.split(/[\s]/).map(&:capitalize).join(' ').split(': ')[1]}
+                  - if @geo_db_results['Accession'].upcase =~ /^GSE/
+                    | #{p.split(/[\s]/).map(&:capitalize).join(' ').split(': ')[0]}
+                  - else 
+                    | #{p.split(/[\s]/).map(&:capitalize).join(' ')}
             label  Group A
           .input-field.col.s12.m6
             select#groupbSelect multiple="" name="groupb[]"
               option disabled="" selected="" value=""  Choose your option(s)  (Group B)
               - phenotypes['options'].each do |p|
                 option  value="#{p}"
-                  | #{p.split(/[\s]/).map(&:capitalize).join(' ').split(': ')[1]}
+                  - if @geo_db_results['Accession'].upcase =~ /^GSE/
+                    | #{p.split(/[\s]/).map(&:capitalize).join(' ').split(': ')[0]}
+                  - else 
+                    | #{p.split(/[\s]/).map(&:capitalize).join(' ')}
             label Group B
       p.select_factors_validations.red-text style="font-size: .8rem; padding-left:1rem;"
     .clearfix
