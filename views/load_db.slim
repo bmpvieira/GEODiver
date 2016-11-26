@@ -28,7 +28,7 @@
               - phenotypes['options'].each do |p|
                 option value="#{p}"
                   - if @geo_db_results['Accession'].upcase =~ /^GSE/
-                    | #{p.split(/[\s]/).map(&:capitalize).join(' ').split(': ')[0]}
+                    | #{p.split(/[\s]/).map(&:capitalize).join(' ').split(': ')[1]}
                   - else 
                     | #{p.split(/[\s]/).map(&:capitalize).join(' ')}
             label  Group A
@@ -38,7 +38,7 @@
               - phenotypes['options'].each do |p|
                 option  value="#{p}"
                   - if @geo_db_results['Accession'].upcase =~ /^GSE/
-                    | #{p.split(/[\s]/).map(&:capitalize).join(' ').split(': ')[0]}
+                    | #{p.split(/[\s]/).map(&:capitalize).join(' ').split(': ')[1]}
                   - else 
                     | #{p.split(/[\s]/).map(&:capitalize).join(' ')}
             label Group B
