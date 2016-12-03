@@ -155,6 +155,7 @@ if (!GD) {
               GD.delete_result();
               GD.share_result();
               GD.remove_share();
+              GD.addGraphTooltips();
               $('#loading_modal').modal('close');
               $('html, body').animate({
                   scrollTop: $('#results_section').offset().top
@@ -678,6 +679,11 @@ if (!GD) {
         $('.select_factors:visible select[name="groupa[]"]').siblings('ul').children('li:nth-child('+ valueIndex +')').find('input:checkbox').prop('disabled', true);
       });
     });
+  };
+
+  GD.addGraphTooltips = function () {
+    $('#dgea-top-table .child-row-chart').tooltip({tooltip: 'Show a graph for the inidividual expression levels for this Gene', position: 'left' });
+    $('#gsea-top-table .child-row-chart').tooltip({tooltip: 'Show a colour coded interaction network for this pathway', position: 'left' });
   };
 }());
 

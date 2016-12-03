@@ -596,6 +596,16 @@ opacity: 0.8;
   width: 100%;
 }
 
+.card .card-title {
+  font-size: 1.7rem;
+  font-weight: 400
+}
+
+.tabs .tab a {
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+
 @media (min-width: 600px) {
   .adv_param_collapsible {
     margin-bottom: -60px;
@@ -612,5 +622,4 @@ opacity: 0.8;
     float: right;
     width: initial; 
   }
-
 }
