@@ -599,7 +599,7 @@ if (!GD) {
       $('#share_btn').hide();
       $('#share_link_input').val(share_link);
       $('#share_link_input').prop("readonly", true);
-      $('#share_modal').openModal();
+      $('#share_modal').modal('open');
       $('#share_modal').attr('data-share-link', share_link);
       $('#share_link_input').select();
       $.ajax({
@@ -614,7 +614,7 @@ if (!GD) {
       var share_link =  $(this).closest('.card').data('share-link');
       $('#share_link_input1').val(share_link);
       $('#share_link_input1').prop("readonly", true);
-      $('#share_the_link_modal').openModal();
+      $('#share_the_link_modal').modal('open');
       $('#share_the_link_modal').attr('data-share-link', share_link);
       $('#share_link_input1').select();
     });
@@ -636,8 +636,8 @@ if (!GD) {
       var remove_link = share_link.replace(/\/sh\//, '/rm/');
       $('#share_the_link_btn').hide();
       $('#share_btn').show();
-      $('#share_modal').closeModal();
-      $('#share_the_link_modal').closeModal();
+      $('#share_modal').modal('close');
+      $('#share_the_link_modal').modal('close');
       $.ajax({
         type: 'POST',
         url: remove_link,
