@@ -28,7 +28,7 @@ module GeoDiver
       # RData
       def run(params)
         init(params)
-        geo_accession = params['geo_db'].upcase
+        geo_accession  = params['geo_db'].upcase
         meta_json_file = File.join(db_dir, geo_accession,
                                    "#{geo_accession}.json")
         if File.exist? meta_json_file
@@ -80,8 +80,8 @@ module GeoDiver
         data = read_geo_file(file)
         return parse_gds_db(data) if geo_accession =~ /^GDS/
         return parse_gse_db(data) if geo_accession =~ /^GSE/
-      rescue
-        raise ArgumentError, 'GeoDiver was unable to download the GEO Database'
+      # rescue
+      #   raise ArgumentError, 'GeoDiver was unable to download the GEO Database'
       end
 
       #
@@ -106,11 +106,11 @@ module GeoDiver
       #
       def generate_remote_gds_url(geo_accession)
         if geo_accession.length == 6
-          remote_dir = 'ftp://ftp.ncbi.nlm.nih.gov//geo/datasets/GDSnnn/' \
+          remote_dir = 'ftp://ftp.ncbi.nlm.nih.gov/geo/datasets/GDSnnn/' \
                        "#{geo_accession}/soft/#{geo_accession}.soft.gz"
         else
           dir_number = geo_accession.match(/GDS(\d)\d+/)[1]
-          remote_dir = 'ftp://ftp.ncbi.nlm.nih.gov//geo/datasets/' \
+          remote_dir = 'ftp://ftp.ncbi.nlm.nih.gov/geo/datasets/' \
                        "GDS#{dir_number}nnn/#{geo_accession}/soft/" \
                        "#{geo_accession}.soft.gz"
         end
@@ -118,23 +118,18 @@ module GeoDiver
       end
 
       def generate_remote_gse_url(geo_accession)
-        if geo_accession.length == 6
-          remote_dir = 'ftp://ftp.ncbi.nlm.nih.gov//geo/series/GSEnnn/' \
-                       "#{geo_accession}/matrix/" \
-                       "#{geo_accession}_series_matrix.txt.gz"
-        elsif geo_accession.length == 7
-          dir_number = geo_accession.match(/GSE(\d)\d+/)[1]
-          remote_dir = 'ftp://ftp.ncbi.nlm.nih.gov//geo/series/' \
-                       "GSE#{dir_number}nnn/#{geo_accession}/matrix/" \
-                       "#{geo_accession}_series_matrix.txt.gz"
-        elsif geo_accession.length == 8
-          dir_number = geo_accession.match(/GSE(\d\d)\d+/)[1]
-          remote_dir = 'ftp://ftp.ncbi.nlm.nih.gov//geo/series/' \
-                       "GSE#{dir_number}nnn/#{geo_accession}/matrix/" \
-                       "#{geo_accession}_series_matrix.txt.gz"
-
+        if geo_accession.length <= 6
+          dir = 'GSEnnn'
+        else
+          if geo_accession.length == 8
+            dir_number = geo_accession.match(/GSE(\d\d)\d+/)[1]
+          elsif geo_accession.length == 7
+            dir_number = geo_accession.match(/GSE(\d)\d+/)[1]
+          end
+          dir = "GSE#{dir_number}nnn"
         end
-        remote_dir
+        "ftp://ftp.ncbi.nlm.nih.gov/geo/series/#{dir}/#{geo_accession}" \
+        "/matrix/#{geo_accession}_series_matrix.txt.gz"
       end
 
       # Loads the file into memory line by line
