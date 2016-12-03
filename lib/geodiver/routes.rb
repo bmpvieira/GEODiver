@@ -205,7 +205,7 @@ module GeoDiver
 
     not_found do
       status 404
-      slim :"500", layout: :app_layout
+      slim :"404", layout: :app_layout
     end
   end
 end
