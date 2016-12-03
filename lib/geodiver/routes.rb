@@ -155,7 +155,7 @@ module GeoDiver
 
     # Delete a Results Page
     post '/delete_result' do
-      email = session[:user].nil? ? 'docsnap' : session[:user].info['email']
+      email = session[:user].nil? ? 'geodiver' : session[:user].info['email']
       @results_url = File.join(GeoDiver.users_dir, email, params['geo_db'],
                                params['result_id'])
       FileUtils.rm_r @results_url if Dir.exist? @results_url
