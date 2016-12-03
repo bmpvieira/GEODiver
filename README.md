@@ -1,7 +1,7 @@
 # GeoDiver
 
-[![Build Status](https://travis-ci.org/SBCS-Bioinformatics/GEODiver.svg?branch=master)](https://travis-ci.org/SBCS-Bioinformatics/GEODiver)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/SBCS-Bioinformatics/GEODiver/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/SBCS-Bioinformatics/GEODiver/?branch=master)
+[![Build Status](https://travis-ci.org/GeoDiver/GEODiver.svg?branch=master)](https://travis-ci.org/GeoDiver/GEODiver)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/GeoDiver/GEODiver/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/GeoDiver/GEODiver/?branch=master)
 
 
 
@@ -30,7 +30,7 @@ Simply run the following command in the terminal.
 
 ```bash
 # Clone the repository.
-git clone https://github.com/SBCS-Bioinformatics/GEODiver
+git clone https://github.com/GeoDiver/GEODiver
 
 # Move into GeoDiver source directory.
 cd GEODiver
