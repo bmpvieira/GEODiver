@@ -23,6 +23,15 @@ GeoDiver is a web app that allows users to easily analyse GEO datasets.
 * R (=3.2.2)
   * Recommended to use R to install R
 
+###Google API Setup
+You will need need a GOOGLE_SECRET and GOOGLE_KEY in order to use the login system that GeoDiver utilises.
+
+1. Go to 'https://console.developers.google.com'
+2. Select your project.
+3. Click 'Enable and manage APIs'.
+4. Make sure "Contacts API" and "Google+ API" are on.
+5. Go to Credentials, then select the "OAuth consent screen" tab on top, and provide an 'EMAIL ADDRESS' and a 'PRODUCT NAME'
+6. Wait 10 minutes for changes to take effect.
 
 
 ### Installation
