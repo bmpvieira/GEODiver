@@ -162,6 +162,18 @@ module GeoDiver
       FileUtils.rm_r @results_url if Dir.exist? @results_url
     end
 
+    get '/auth/:provider/callback' do
+      content_type 'text/plain'
+      session[:user] = env['omniauth.auth']
+      user_dir    = File.join(GeoDiver.users_dir, session[:user].info['email'])
+      user_public = File.join(GeoDiver.public_dir, 'GeoDiver/Users')
+      FileUtils.mkdir(user_dir) unless Dir.exist?(user_dir)
+      unless File.exist? File.join(user_public, session[:user].info['email'])
+        FileUtils.ln_s(user_dir, user_public)
+      end
+      redirect '/analyse'
+    end
+
     post '/auth/:provider/callback' do
       content_type :json
       session[:user] = env['omniauth.auth']
