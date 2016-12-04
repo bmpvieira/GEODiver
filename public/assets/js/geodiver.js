@@ -156,7 +156,6 @@ if (!GD) {
               GD.share_result();
               GD.show_GeoDB_modal();
               GD.remove_share();
-              GD.addGraphTooltips();
               $('#loading_modal').modal('close');
               $('html, body').animate({
                   scrollTop: $('#results_section').offset().top
@@ -312,6 +311,7 @@ if (!GD) {
       Plotly.Plots.resize(pca2dScatterPlot);
       Plotly.Plots.resize(pca3dScatterPlot);
     });
+    GD.addGraphTooltips();
   };
 
   GD.create2dPCAScatterPlot = function(pcdata, x, y) {
