@@ -103,7 +103,7 @@ if (!GD) {
             GD.addFactorToggle();
             $('select').material_select();
             $('.tooltipped').tooltip();
-            GD.addDataSetInfo();
+            GD.addGeoDbInfo($('input[name=geo_db]').val());
             GD.analyseValidation();
             $('#loading_modal').modal('close');
           },
@@ -154,6 +154,7 @@ if (!GD) {
               GD.download_all_results();
               GD.delete_result();
               GD.share_result();
+              GD.show_GeoDB_modal();
               GD.remove_share();
               GD.addGraphTooltips();
               $('#loading_modal').modal('close');
@@ -523,11 +524,11 @@ if (!GD) {
     });
   };
 
-  GD.addDataSetInfo = function() {
-    var geoAccession = $('input[name=geo_db]').val().toUpperCase();
-    var jsonFile = 'GeoDiver/DBs/' + geoAccession + '.json';
+  GD.addGeoDbInfo = function (geoAccession) {
+    var accession = geoAccession.toUpperCase();
+    var jsonFile = 'http://' + window.location.host + '/GeoDiver/DBs/' + accession + '.json';
     $.getJSON(jsonFile, function(json) {
-      $('#dataset_accession').text(json.Accession);
+      $('#dataset_accession').text(' ' + json.Accession);
       $('#dataset_title').text(json.Title);
       $('#dataset_summary').text(json.Description);
       $('#dataset_organism').text(json.Sample_Organism);
@@ -589,6 +590,14 @@ if (!GD) {
           GD.ajaxError(e, status);
         }
       });
+    });
+  };
+
+  GD.show_GeoDB_modal = function () {
+    $('#results_section').on('click', '.open_db_info_modal', function() {
+      var accession = $(this).data('accession');
+      GD.addGeoDbInfo(accession);
+      $('#dbInfo').modal('open');
     });
   };
 
@@ -688,6 +697,8 @@ if (!GD) {
 }());
 
 (function($) {
+  $.fn.exists = function(){return this.length>0;};
+
   // Fn to allow an event to fire after all images are loaded
   $.fn.imagesLoaded = function () {
     var $imgs = this.find('img[src!=""]');

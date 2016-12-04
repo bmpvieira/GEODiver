@@ -134,6 +134,29 @@ html lang="en"
         a.modal-action.modal-close.waves-effect.waves-red.btn-flat.left href="#!"   Cancel
         a.waves-effect.waves-green.btn-flat  href="/auth/google_oauth2"  Login
 
+    #dbInfo.modal
+      .modal-content
+        h4.grey-text.text-darken-4
+          | GEO Dataset:
+          span#dataset_accession
+          i.material-icons.right.modal-close close
+        p
+          span#dataset_title.light-blue-text.text-darken-3.dataset_info_title 
+        p
+          span.light-blue-text.text-darken-3.dataset_info_header Summary:
+          br
+          span#dataset_summary
+        p
+          span.light-blue-text.text-darken-3.dataset_info_header Organism:
+          br
+          span#dataset_organism
+        p
+          span.light-blue-text.text-darken-3.dataset_info_header Citations:
+          br
+          span#dataset_citation 
+      .modal-footer
+        a.modal-action.modal-close.waves-effect.waves-green.btn-flat href="#!"  Close
+
     script src="https://code.jquery.com/jquery-3.1.1.min.js" 
     script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"
     script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"
@@ -149,4 +172,12 @@ html lang="en"
             GD.delete_result();
             GD.share_result();
             GD.remove_share();
+            GD.show_GeoDB_modal();
+            if ($('#open_info_modal').exists()) {
+              var accession = $('#open_info_modal').data('accession');
+              GD.addGeoDbInfo(accession);
+              $('#open_info_modal').on('click', function() {
+                $('#dbInfo').modal('open');
+              });
+            }
         });
