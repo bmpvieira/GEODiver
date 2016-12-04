@@ -63,7 +63,7 @@ html lang="en"
                 .clearfix
           - else      
             li
-              a.white-text href="#{request.base_url}/auth/google_oauth2" 
+              a#login_button.white-text 
                 i.material-icons.right> perm_identity
                 | Login
         .container
@@ -74,8 +74,12 @@ html lang="en"
             a href="#{request.base_url}/analyse"  Analyse
           li
             a href="#{request.base_url}/my_results"  My Results
-          li
-            a href="#{request.base_url}/logout"  Logout
+          - if ! session[:user].nil?
+            li
+              a#login_button  Login
+          - else 
+            li
+              a href="#{request.base_url}/logout"  Logout
     == yield
     #loading_modal.modal
       .modal-content

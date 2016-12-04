@@ -694,6 +694,42 @@ if (!GD) {
     $('#dgea-top-table .child-row-chart').tooltip({tooltip: 'Show a graph for the inidividual expression levels for this Gene', position: 'left' });
     $('#gsea-top-table .child-row-chart').tooltip({tooltip: 'Show a colour coded interaction network for this pathway', position: 'left' });
   };
+
+  GD.setupGoogleAuthentication = function () {
+    gapi.auth.authorize({
+      immediate: true,
+      response_type: 'code',
+      cookie_policy: 'single_host_origin',
+      client_id: '264108620349-m2b4dnjqeigq1ooi5o31i2rbve64i3gt.apps.googleusercontent.com',
+      scope: 'email'
+    }, function(response) {
+      return;
+    });
+    $('#login_button').click(function(e) {
+      e.preventDefault();
+      gapi.auth.authorize({
+        immediate: false,
+        response_type: 'code',
+        cookie_policy: 'single_host_origin',
+        client_id: '264108620349-m2b4dnjqeigq1ooi5o31i2rbve64i3gt.apps.googleusercontent.com',
+        scope: 'email'
+      }, function(response) {
+        if (response && !response.error) {
+          // google authentication succeed, now post data to server.
+          jQuery.ajax({
+            type: 'POST',
+            url: "/auth/google_oauth2/callback",
+            data: response,
+            success: function(data) {
+              $(location).attr('href', 'http://' + window.location.host + '/analyse');
+            }
+          });
+        } else {
+          // TODO: ERROR Response google authentication failed
+        }
+      });
+    });
+  };
 }());
 
 (function($) {
@@ -731,4 +767,16 @@ if (!GD) {
     if ($('#exemplar_result').length) { GD.exemplar_results(); }
     GD.addUserDropDown();
   });
+
+  $(function() {
+    return $.ajax({
+      url: 'https://apis.google.com/js/client:plus.js?onload=gpAsyncInit',
+      dataType: 'script',
+      cache: true
+    });
+  });
+
+  window.gpAsyncInit = function() {
+    GD.setupGoogleAuthentication();
+  };
 })(jQuery);

@@ -40,7 +40,8 @@ module GeoDiver
 
       # Provide OmniAuth the Google Key and Secret Key for Authentication
       use OmniAuth::Builder do
-        provider :google_oauth2, ENV['GOOGLE_KEY'], ENV['GOOGLE_SECRET'], {}
+        provider :google_oauth2, ENV['GOOGLE_KEY'], ENV['GOOGLE_SECRET'],
+                 provider_ignores_state: true
       end
 
       # view directory will be found here.
@@ -161,8 +162,8 @@ module GeoDiver
       FileUtils.rm_r @results_url if Dir.exist? @results_url
     end
 
-    get '/auth/:provider/callback' do
-      content_type 'text/plain'
+    post '/auth/:provider/callback' do
+      content_type :json
       session[:user] = env['omniauth.auth']
       user_dir    = File.join(GeoDiver.users_dir, session[:user].info['email'])
       user_public = File.join(GeoDiver.public_dir, 'GeoDiver/Users')
@@ -170,7 +171,7 @@ module GeoDiver
       unless File.exist? File.join(user_public, session[:user].info['email'])
         FileUtils.ln_s(user_dir, user_public)
       end
-      redirect '/analyse'
+      env['omniauth.auth'].to_json
     end
 
     get '/logout' do
