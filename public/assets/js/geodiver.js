@@ -773,7 +773,7 @@ if (!GD) {
       url: 'https://apis.google.com/js/client:plus.js?onload=gpAsyncInit',
       dataType: 'script',
       cache: true
-    });
+    })
   });
 
   window.gpAsyncInit = function() {
