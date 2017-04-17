@@ -63,7 +63,7 @@ html lang="en"
                 .clearfix
           - else      
             li
-              a#login_button.white-text 
+              a.login_button.white-text 
                 i.material-icons.right> perm_identity
                 | Login
         .container
@@ -76,7 +76,7 @@ html lang="en"
             a href="#{request.base_url}/my_results"  My Results
           - if ! session[:user].nil?
             li
-              a#login_button  Login
+              a.login_button  Login
           - else 
             li
               a href="#{request.base_url}/logout"  Logout
@@ -136,7 +136,7 @@ html lang="en"
         p  We need to know who you are in order to show you the results of your previous analyses. Please click on the button below in order to login using your Google account.
       .modal-footer
         a.modal-action.modal-close.waves-effect.waves-red.btn-flat.left href="#!"   Cancel
-        a#login_button.waves-effect.waves-green.btn-flat  Login
+        a.login_button.waves-effect.waves-green.btn-flat  Login
 
     #dbInfo.modal
       .modal-content

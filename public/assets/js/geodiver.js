@@ -705,7 +705,7 @@ if (!GD) {
     }, function(response) {
       return;
     });
-    $('#login_button').click(function(e) {
+    $('.login_button').on('click', function(e) {
       e.preventDefault();
       gapi.auth.authorize({
         immediate: false,
@@ -721,6 +721,7 @@ if (!GD) {
             url: "/auth/google_oauth2/callback",
             data: response,
             success: function(data) {
+              // TODO - just update the DOM instead of a redirect
               $(location).attr('href', 'http://' + window.location.host + '/analyse');
             }
           });
@@ -773,7 +774,7 @@ if (!GD) {
       url: 'https://apis.google.com/js/client:plus.js?onload=gpAsyncInit',
       dataType: 'script',
       cache: true
-    })
+    });
   });
 
   window.gpAsyncInit = function() {

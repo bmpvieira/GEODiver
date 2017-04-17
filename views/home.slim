@@ -46,12 +46,12 @@ html lang="en"
           | &nbsp;GeoDiver
         ul.right.hide-on-med-and-down
           li
-            a#login_button
+            a.login_button
               i.material-icons.right> perm_identity
               | Login
         ul#nav-mobile.side-nav
           li
-            a#login_button  Login
+            a.login_button  Login
         a.button-collapse data-activates="nav-mobile" href="#" 
           i.material-icons menu
     #index-banner.parallax-container
@@ -156,7 +156,7 @@ html lang="en"
         }, function(response) {
           return;
         });
-        $('#login_button').click(function(e) {
+        $('.login_button').on('click', function(e) {
           e.preventDefault();
           gapi.auth.authorize({
             immediate: false,
