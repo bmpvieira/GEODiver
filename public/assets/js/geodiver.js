@@ -707,6 +707,7 @@ if (!GD) {
     });
     $('.login_button').on('click', function(e) {
       e.preventDefault();
+      /** global: gapi */ 
       gapi.auth.authorize({
         immediate: false,
         response_type: 'code',

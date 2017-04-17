@@ -1,4 +1,4 @@
-(function(window, document, undefined) {
+(function(window, document) {
 
   var factory = function($, DataTable) {
     "use strict";
@@ -44,7 +44,6 @@
             btnClass = '';
 
             switch (button) {
-
               case 'first':
                 btnDisplay = lang.sFirst;
                 btnClass = button + (page > 0 ?
@@ -69,6 +68,8 @@
                   '' : ' disabled');
                 break;
 
+              default:
+                break;
             }
 
             if (btnDisplay) {
@@ -109,7 +110,9 @@
         // accessibility. So we want to restore focus once the draw has
         // completed
         activeEl = $(document.activeElement).data('dt-idx');
-      } catch (e) {}
+      } catch (e) { 
+        // console.log(e);
+      }
 
       attach(
         $(host).empty().html('<ul class="material-pagination"/>').children('ul'),
@@ -161,6 +164,7 @@
   }; // /factory
 
   // Define as an AMD module if possible
+  /** global: define */
   if (typeof define === 'function' && define.amd) {
     define(['jquery', 'datatables'], factory);
   } else if (typeof exports === 'object') {
