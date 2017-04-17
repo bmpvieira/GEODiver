@@ -167,6 +167,8 @@ html lang="en"
     script src="https://cdn.plot.ly/plotly-latest.min.js" 
     script src="//cdn.datatables.net/1.10.10/js/jquery.dataTables.js"
     script src="#{uri('assets/js/geodiver-' + GeoDiver::VERSION + '.min.js')}"
+    javascript: 
+      GD.CLIENT_ID = "#{ENV['GOOGLE_KEY']}"
     - if request.path_info =~ %r{^/result/} || request.path_info =~ %r{^/sh/} || request.path_info =~ %r{^/my_results}
       javascript:
         $( document ).ready(function() {

@@ -151,7 +151,7 @@ html lang="en"
           immediate: true,
           response_type: 'code',
           cookie_policy: 'single_host_origin',
-          client_id: '264108620349-m2b4dnjqeigq1ooi5o31i2rbve64i3gt.apps.googleusercontent.com',
+          client_id: "#{ENV['GOOGLE_KEY']}",
           scope: 'email profile'
         }, function(response) {
           return;
@@ -162,7 +162,7 @@ html lang="en"
             immediate: false,
             response_type: 'code',
             cookie_policy: 'single_host_origin',
-            client_id: '264108620349-m2b4dnjqeigq1ooi5o31i2rbve64i3gt.apps.googleusercontent.com',
+            client_id: "#{ENV['GOOGLE_KEY']}",
             scope: 'email profile'
           }, function(response) {
             if (response && !response.error) {

@@ -700,7 +700,7 @@ if (!GD) {
       immediate: true,
       response_type: 'code',
       cookie_policy: 'single_host_origin',
-      client_id: '264108620349-m2b4dnjqeigq1ooi5o31i2rbve64i3gt.apps.googleusercontent.com',
+      client_id: GD.CLIENT_ID,
       scope: 'email'
     }, function(response) {
       return;
@@ -711,7 +711,7 @@ if (!GD) {
         immediate: false,
         response_type: 'code',
         cookie_policy: 'single_host_origin',
-        client_id: '264108620349-m2b4dnjqeigq1ooi5o31i2rbve64i3gt.apps.googleusercontent.com',
+        client_id: GD.CLIENT_ID,
         scope: 'email'
       }, function(response) {
         if (response && !response.error) {
