@@ -191,11 +191,11 @@ module GeoDiver
                                   session[:user].info['email'])
       FileUtils.rm(user_public_dir)
       session[:user] = nil
-      redirect '/'
+      redirect '/analyse'
     end
 
     get '/auth/failure' do
-      redirect '/'
+      redirect '/analyse'
     end
 
     # This error block will only ever be hit if the user gives us a funny
