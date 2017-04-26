@@ -1,6 +1,6 @@
 # GeoDiver
 
-[![Build Status](https://travis-ci.org/GeoDiver/GEODiver.svg?branch=master)](https://travis-ci.org/GeoDiver/GEODiver)
+[![Build Status](https://travis-ci.org/GeoDiver/GeoDiver.svg?branch=master)](https://travis-ci.org/GeoDiver/GeoDiver)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/GeoDiver/GEODiver/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/GeoDiver/GEODiver/?branch=master)
 
 
