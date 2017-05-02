@@ -14,7 +14,26 @@ suppressMessages(library("argparser"))
 suppressMessages(library("GEOquery"))
 suppressMessages(library("impute"))
 suppressMessages(library("pathview")) # for the id2eg function
-suppressMessages(library("org.Mm.eg.db"))  # Species database
+# Species database
+library("org.Ag.eg.db") # "Anopheles" "aga" "eg"
+library("org.At.tair.db") # "Arabidopsis" "ath" "tair"
+library("org.Bt.eg.db") # "Bovine" "bta" "eg"
+library("org.Ce.eg.db") # "Worm" "cel" "eg"
+library("org.Cf.eg.db") # "Canine" "cfa" "eg"
+library("org.Dm.eg.db") # "Fly" "dme" "eg"
+library("org.Dr.eg.db") # "Zebrafish" "dre" "eg"
+library("org.EcK12.eg.db") # "E coli strain K12" "eco" "eg"
+library("org.EcSakai.eg.db") # "E coli strain Sakai" "ecs" "eg"
+library("org.Gg.eg.db") # "Chicken" "gga" "eg"
+library("org.Hs.eg.db") # "Human" "hsa" "eg"
+library("org.Mm.eg.db") # "Mouse" "mmu" "eg"
+library("org.Mmu.eg.db") # "Rhesus" "mcc" "eg"
+library("org.Pf.plasmo.db") # "Malaria" "pfa" "orf"
+library("org.Pt.eg.db") # "Chimp" "ptr" "eg"
+library("org.Rn.eg.db") # "Rat" "rno" "eg"
+library("org.Sc.sgd.db") # "Yeast" "sce" "orf"
+library("org.Ss.eg.db") # "Pig" "ssc" "eg"
+library("org.Xl.eg.db") # "Xenopus" "xla" "eg"
 data(korg)
 data(bods)
 
@@ -65,21 +84,7 @@ if (grepl('^GDS', argv$accession)) {
   featureData    <- eset@featureData@data
 }
 
-# Retrieve scientific name for organism
-organism.scientific.name <-as.character(korg[which(korg[, "scientific.name"] == organism), "kegg.code"])
-organism.common.name <- as.character(bods[which(bods[, "kegg code"] == organism.scientific.name), "species"])
-
-if (c('ENTREZ_GENE_ID') %in% names(featureData)) {
-  entrez.gene.id <- featureData[, 'ENTREZ_GENE_ID']
-} else {
-  package <-as.character(bods[which(bods[, "kegg code"] == organism.scientific.name), "package"])
-  # Create two column table containing entrez IDs for geodataset
-  entrez.id <- id2eg(ids =  gene.names, category = "SYMBOL", pkg.name = package, 
-                     org = as.character(organism.scientific.name))  
-  entrez.gene.id <- entrez.id[,2]
-}
-
-X           <- exprs(eset) # Get Expression Data
+X      <- exprs(eset) # Get Expression Data
 pData       <- pData(eset)
 rownames(X) <- gene.names
 
@@ -107,6 +112,33 @@ if (scalable(X)) {
   X[which(X <= 0)] <- NaN # not possible to log transform negative numbers
   X <- log2(X)
 }
+
+# TODO - what happens if species isn't in the korg/ bods db..
+organism.scientific.name <-as.character(korg[which(korg[, "scientific.name"] == organism), "kegg.code"])
+organism.common.name <- as.character(bods[which(bods[, "kegg code"] == organism.scientific.name), "species"])
+
+#  Convert Gene Symbols to Entrez IDs (For GAGE Script)
+entrez.gene.id <- tryCatch({
+  if (c('ENTREZ_GENE_ID') %in% names(featureData)) {
+    featureData[, 'ENTREZ_GENE_ID']
+  } else {
+    package <-as.character(bods[which(bods[, "kegg code"] == organism.scientific.name), "package"])
+    # Create two column table containing entrez IDs for geodataset
+    entrez.id <- id2eg(ids = gene.names, category = "SYMBOL", pkg.name = package,
+                       org = as.character(organism.scientific.name))
+    entrez.id[,2]
+  }
+}, warning = function(warning) {
+  cat("# Warning ID2EG: ", file=stderr())
+  cat(warning$message, file=stderr())
+}, error = function(error) {
+  cat("# ERROR ID2EG: ", file=stderr())
+  cat(error$message, file=stderr())
+  cat("\n", file=stderr())
+  cat("## This may be because ID2EG does not support this organism: ", file=stderr())
+  cat(paste("(", organism.common.name, ", ", organism.scientific.name, ")\n"), file=stderr())
+  return (c('FAILED') )
+})
 
 if (! is.na(argv$outrdata)) {
   save(X, pData, gene.names, organism, organism.common.name, organism.scientific.name, entrez.gene.id, file = argv$outrdata)
