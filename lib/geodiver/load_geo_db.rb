@@ -26,7 +26,7 @@ module GeoDiver
       # Check if the GEO database has already been downloaded, if not, then
       # download the GEO dataset and extract the meta data and convert into
       # RData
-      def run(params)
+      def run(params, soft_link = true)
         init(params)
         geo_accession  = params['geo_db'].upcase
         meta_json_file = File.join(db_dir, geo_accession,
@@ -40,7 +40,9 @@ module GeoDiver
           meta_data = download_and_parse_meta_data(geo_accession)
           write_to_json(meta_data, meta_json_file)
         end
-        soft_link_meta_json_to_public_dir(geo_accession, meta_json_file)
+        if soft_link
+          soft_link_meta_json_to_public_dir(geo_accession, meta_json_file)
+        end
         logger.debug('GeoDb loaded into memory')
         meta_data
       end
@@ -80,8 +82,8 @@ module GeoDiver
         data = read_geo_file(file)
         return parse_gds_db(data) if geo_accession =~ /^GDS/
         return parse_gse_db(data) if geo_accession =~ /^GSE/
-      # rescue
-      #   raise ArgumentError, 'GeoDiver was unable to download the GEO Database'
+      rescue
+        raise ArgumentError, 'GeoDiver was unable to download the GEO Database'
       end
 
       #
@@ -96,8 +98,19 @@ module GeoDiver
         output_dir = File.join(db_dir, geo_accession)
         FileUtils.mkdir(output_dir) unless Dir.exist? output_dir
         compressed = File.join(output_dir, file)
+        wget_geo_file(remote_dir, compressed, geo_accession, output_dir)
+        compressing_geo_file(compressed)
+      end
+
+      def wget_geo_file(remote_dir, compressed, geo_accession, output_dir)
         logger.debug("Downloading from: #{remote_dir} ==> #{compressed}")
-        `wget #{remote_dir} --output-document #{compressed}`
+        `wget #{remote_dir} -O #{compressed} || rm -r #{output_dir}`
+        return if $CHILD_STATUS.exitstatus.zero?
+        logger.debug "Cannot find Geo Dataset on GEO: #{geo_accession}"
+        raise ArgumentError, "Cannot find Geo Dataset on GEO: #{geo_accession}"
+      end
+
+      def compressing_geo_file(compressed)
         logger.debug("Uncompressing file: #{compressed.gsub('.gz', '')}")
         system "gunzip --force -c #{compressed} > #{compressed.gsub('.gz', '')}"
         compressed.gsub('.gz', '')
@@ -105,16 +118,11 @@ module GeoDiver
 
       #
       def generate_remote_gds_url(geo_accession)
-        if geo_accession.length == 6
-          remote_dir = 'ftp://ftp.ncbi.nlm.nih.gov/geo/datasets/GDSnnn/' \
-                       "#{geo_accession}/soft/#{geo_accession}.soft.gz"
-        else
-          dir_number = geo_accession.match(/GDS(\d)\d+/)[1]
-          remote_dir = 'ftp://ftp.ncbi.nlm.nih.gov/geo/datasets/' \
-                       "GDS#{dir_number}nnn/#{geo_accession}/soft/" \
-                       "#{geo_accession}.soft.gz"
-        end
-        remote_dir
+        cmd = "bionode-ncbi search gds #{geo_accession} |"\
+              " jq -cr 'select(.accession == \"#{geo_accession}\") | .ftplink'"
+        url = `#{cmd}`.chomp!
+        return if url.nil? || url.empty?
+        url + geo_accession + '.soft.gz' 
       end
 
       def generate_remote_gse_url(geo_accession)

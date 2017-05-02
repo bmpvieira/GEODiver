@@ -24,6 +24,9 @@ Feel free to give us a shout on the github issues, if you would like more help t
   * Recommended to use [rvm](https://rvm.io/rvm/install) to install ruby
 * R (=3.3.2)
   * https://cran.r-project.org
+* NodeJs (>= 7.7)
+* bionode-ncbi (>= 2.0)
+* jq (>= 1.5)
 
 ### Google API Setup
 In order to use the Google Login System (recommended), you need register with Google API to recieve a key and secret key (don't forget to keep your secret key a secret!)
