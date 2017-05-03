@@ -17,7 +17,7 @@ html lang="en"
     nav.blue.darken-4
       .nav-wrapper
         span.hide-on-med-and-down.logo
-          img height="64" src="#{uri('assets/img/logo.min.svg')}" alt="GeoDiver Logo"
+          img height="64" src="#{uri('geodiver-white.min.svg')}" alt="GeoDiver Logo"
         a#logo-container.brand-logo.white-text href="#{request.base_url}"
           | &nbsp;GeoDiver
         ul.hide-on-med-and-down.navbar_centered
@@ -27,7 +27,7 @@ html lang="en"
             a.white-text href="/auth/google_oauth2"  My Results 
         ul.right.hide-on-med-and-down
           li
-            a.white-text href="/auth/google_oauth2" 
+            a.login_button.white-text 
               i.material-icons.right> perm_identity
               | Login
         .container
@@ -35,7 +35,7 @@ html lang="en"
             i.material-icons.white-text menu
         ul#nav-mobile.side-nav
           li
-            a href="/auth/google_oauth2"  Login
+            a.login_button  Login
     .container
       h3  Frequently asked Questions
 
@@ -122,9 +122,9 @@ html lang="en"
 
 
 
-    script src="https://code.jquery.com/jquery-2.1.1.min.js" 
-    script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"
-    script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"
+    script src="https://code.jquery.com/jquery-3.1.1.min.js" 
+    script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"
+    script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.min.js"
     script src="https://cdn.plot.ly/plotly-latest.min.js" 
-    script src="//cdn.datatables.net/1.10.10/js/jquery.dataTables.js"
+    script src="//cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"
     script src="#{uri('assets/js/geodiver-' + GeoDiver::VERSION + '.min.js')}"

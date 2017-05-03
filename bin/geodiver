@@ -49,6 +49,12 @@ BANNER
     on 's', 'set',
        'Set configuration value in default or given config file'
 
+    on 'gds_cache',
+       'Set up local cache of GDS datasets.'
+
+    on 'gse_cache',
+       'Set up local cache of GSE data series.'
+
     on 'D', 'devel',
        'Start GeoDiver in development mode'
 
@@ -130,6 +136,18 @@ MSG
 
       GeoDiver.config.write_config_file if set?
       GeoDiver.config.write_config_file if fetch_option(:set).value
+      
+      if gds_cache?
+        require 'geodiver/generate_cache'
+        GeoDiver::GdsCache.run_gds
+        exit
+      end
+
+      if gse_cache?
+        require 'geodiver/generate_cache'
+        GeoDiver::GdsCache.run_gse
+        exit
+      end
 
       GeoDiver.run
     end

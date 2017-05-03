@@ -40,7 +40,8 @@ module GeoDiver
 
       # Provide OmniAuth the Google Key and Secret Key for Authentication
       use OmniAuth::Builder do
-        provider :google_oauth2, ENV['GOOGLE_KEY'], ENV['GOOGLE_SECRET'], {}
+        provider :google_oauth2, ENV['GOOGLE_KEY'], ENV['GOOGLE_SECRET'],
+                 provider_ignores_state: true
       end
 
       # view directory will be found here.
@@ -62,7 +63,6 @@ module GeoDiver
 
     # Analyse Page
     get '/analyse' do
-      redirect to('auth/google_oauth2') if session[:user].nil?
       slim :analyse, layout: :app_layout
     end
 
@@ -102,7 +102,6 @@ module GeoDiver
 
     # Load the Geo Database
     post '/load_geo_db' do
-      redirect to('auth/google_oauth2') if session[:user].nil?
       @geo_db_results = LoadGeoData.run(params)
       # Convert the GeoDb into RData in the background if necessary
       session[:geodb] = LoadGeoData.convert_geodb_into_rdata(params['geo_db'])
@@ -111,7 +110,6 @@ module GeoDiver
 
     # Run the GeoDiver Analysis
     post '/analyse' do
-      redirect to('auth/google_oauth2') if session[:user].nil?
       email    = Base64.decode64(params[:user])
       @results = GeoAnalysis.run(params, email, request.base_url,
                                  session[:geodb])
@@ -127,7 +125,7 @@ module GeoDiver
 
     # Generate the Interaction Netwoks
     post '/interaction_image' do
-      email            =  Base64.decode64(params[:user])
+      email            = Base64.decode64(params[:user])
       @interaction_img = GeoAnalysisHelper.create_interactions(params, email)
       slim :interactionNetwork, layout: false
     end
@@ -151,16 +149,16 @@ module GeoDiver
       share = File.join(GeoDiver.public_dir, 'GeoDiver/Share', email,
                         params['geo_db'], params['time'])
       FileUtils.rm_r(share) if File.exist? share
-      share_file  = File.join(GeoDiver.users_dir, email, params['geo_db'],
-                              params['time'], '.share')
+      share_file = File.join(GeoDiver.users_dir, email, params['geo_db'],
+                             params['time'], '.share')
       FileUtils.rm(share_file) if File.exist? share_file
     end
 
     # Delete a Results Page
     post '/delete_result' do
-      redirect to('auth/google_oauth2') if session[:user].nil?
-      @results_url = File.join(GeoDiver.users_dir, session[:user].info['email'],
-                               params['geo_db'], params['result_id'])
+      email = session[:user].nil? ? 'geodiver' : session[:user].info['email']
+      @results_url = File.join(GeoDiver.users_dir, email, params['geo_db'],
+                               params['result_id'])
       FileUtils.rm_r @results_url if Dir.exist? @results_url
     end
 
@@ -176,16 +174,28 @@ module GeoDiver
       redirect '/analyse'
     end
 
+    post '/auth/:provider/callback' do
+      content_type :json
+      session[:user] = env['omniauth.auth']
+      user_dir    = File.join(GeoDiver.users_dir, session[:user].info['email'])
+      user_public = File.join(GeoDiver.public_dir, 'GeoDiver/Users')
+      FileUtils.mkdir(user_dir) unless Dir.exist?(user_dir)
+      unless File.exist? File.join(user_public, session[:user].info['email'])
+        FileUtils.ln_s(user_dir, user_public)
+      end
+      env['omniauth.auth'].to_json
+    end
+
     get '/logout' do
       user_public_dir = File.join(GeoDiver.public_dir, 'GeoDiver/Users',
                                   session[:user].info['email'])
       FileUtils.rm(user_public_dir)
       session[:user] = nil
-      redirect '/'
+      redirect '/analyse'
     end
 
     get '/auth/failure' do
-      redirect '/'
+      redirect '/analyse'
     end
 
     # This error block will only ever be hit if the user gives us a funny
@@ -208,7 +218,7 @@ module GeoDiver
 
     not_found do
       status 404
-      slim :"500", layout: :app_layout
+      slim :"404", layout: :app_layout
     end
   end
 end

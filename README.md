@@ -1,7 +1,7 @@
 # GeoDiver
 
-[![Build Status](https://travis-ci.org/SBCS-Bioinformatics/GEODiver.svg?branch=master)](https://travis-ci.org/SBCS-Bioinformatics/GEODiver)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/SBCS-Bioinformatics/GEODiver/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/SBCS-Bioinformatics/GEODiver/?branch=master)
+[![Build Status](https://travis-ci.org/GeoDiver/GeoDiver.svg?branch=master)](https://travis-ci.org/GeoDiver/GeoDiver)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/GeoDiver/GEODiver/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/GeoDiver/GEODiver/?branch=master)
 
 
 
@@ -17,20 +17,43 @@ GeoDiver is a web app that allows users to easily analyse GEO datasets.
 
 
 ## Installation
+Feel free to give us a shout on the github issues, if you would like more help than that below.
+
 ### Installation Requirements
-* Ruby (>= 2.0.0)
-  * Recommended to use rvm to install ruby
-* R (=3.2.2)
-  * Recommended to use R to install R
+* Ruby (>= 2.2.0)
+  * Recommended to use [rvm](https://rvm.io/rvm/install) to install ruby
+* R (=3.3.2)
+  * https://cran.r-project.org
+* NodeJs (>= 7.7)
+* bionode-ncbi (>= 2.0)
+* jq (>= 1.5)
 
+### Google API Setup
+In order to use the Google Login System (recommended), you need register with Google API to recieve a key and secret key (don't forget to keep your secret key a secret!)
 
+1. Go to 'https://console.developers.google.com'
+2. Select your project or create a new one (in the top left hand corner).
+3. Click on the menu button on the top left, and click on 'API Manager'.
+4. Click on 'Library' in the left side bar.
+5. In the search bar, type in "Contacts API" and then "Google+ API".
+6. When it is shown, click on the API name and then select 'Enable'.
+7. Once enabled, go back to the previous screen and search for the second API.
+8. After, enabling both APIs, click on 'Credentials' in the side bar.
+9. Next select the "OAuth consent screen" tab on top, and provide an 'EMAIL ADDRESS' and a 'PRODUCT NAME'
+10. Press 'Save' (This may automatically take you to step 12)
+11. Next select the 'Credentials' tab on top and click on 'Create Credentials' and then 'OAuth Client ID'.
+12. Under Application type, select 'Web Application'
+13. Select a name for your application (e.g. GeoDiver)
+14. Under Authorised Javscript origins, add 'http://localhost:9292' (and other domain name you wish to use)
+15. Next, under Authorised redirect URIs add 'http://localhost:9292/auth/google_oauth2/callback'.
+16. Copy Client ID and Client Secret.
 
-### Installation
+### GeoDiver Installation
 Simply run the following command in the terminal.
 
 ```bash
 # Clone the repository.
-git clone https://github.com/SBCS-Bioinformatics/GEODiver
+git clone https://github.com/GeoDiver/GEODiver
 
 # Move into GeoDiver source directory.
 cd GEODiver
@@ -39,7 +62,8 @@ cd GEODiver
 rake install 
 
 # Start the web app
-passenger start --envvar GOOGLE_KEY= --envvar GOOGLE_SECRET= -p 9292 -e production --sticky-sessions -d
+# Make sure you replace $CLIENTID and $CLIENTSECRET with the actual values that you copied above.
+passenger start --envvar GOOGLE_KEY=$CLIENTID --envvar GOOGLE_SECRET=$CLIENTSECRET -p 9292 -e production --sticky-sessions -d
 ```
 
 ##### Running From Source (Not Recommended)

@@ -85,7 +85,7 @@ module GeoDiver
       def assert_geo_db_present
         logger.debug('Asserting GEO db is present.')
         return unless @params['geo_db'].nil? || @params['geo_db'].empty?
-        fail ArgumentError, 'No GEO database provided.'
+        raise ArgumentError, 'No GEO database provided.'
       end
 
       #
@@ -110,6 +110,8 @@ module GeoDiver
           run_dgea if @params['dgea'] == 'on'
           run_gage if @params['gsea'] == 'on'
         end
+        compress_svg(File.join(@run_dir, 'dgea_heatmap.svg'))
+        compress_svg(File.join(@run_dir, 'gage_heatmap.svg'))
       end
 
       def run_analysis_multi_threaded
@@ -144,11 +146,11 @@ module GeoDiver
         "Rscript #{File.join(GeoDiver.root, 'RCore/overview.R')}" \
         " --dbrdata #{dbrdata} --rundir '#{@run_dir}/'" \
         " --analyse 'Boxplot,PCA'" \
-        " --accession #{@params['geo_db']} --factor \"#{@params['factor']}\"" \
+        " --factor \"#{@params['factor']}\"" \
         " --popA \"#{to_comma_delimited_string(@params['groupa'])}\"" \
         " --popB \"#{to_comma_delimited_string(@params['groupb'])}\"" \
         " --popname1 'Group1' --popname2 'Group2'" \
-        ' --dev TRUE'
+        ' --dev'
       end
 
       #
@@ -156,7 +158,7 @@ module GeoDiver
         "Rscript #{File.join(GeoDiver.root, 'RCore/dgea.R')}" \
         " --dbrdata #{dbrdata} --rundir '#{@run_dir}/'" \
         " --analyse '#{analyses_to_carry_out.join(',')}'" \
-        " --accession #{@params['geo_db']} --factor \"#{@params['factor']}\"" \
+        " --factor \"#{@params['factor']}\"" \
         " --popA \"#{to_comma_delimited_string(@params['groupa'])}\"" \
         " --popB \"#{to_comma_delimited_string(@params['groupb'])}\"" \
         " --popname1 'Group1' --popname2 'Group2'" \
@@ -167,15 +169,15 @@ module GeoDiver
         " --clusterby '#{dgea_clusterby_method}'" \
         " --heatmaprows #{@params['dgea_heatmap_rows']} " \
         " --adjmethod '#{@params['dgea_volcano_pValue_cutoff']}'" \
-        " --dendrow #{(@params['dgea_cluster_by_genes'] == 'on')} "\
-        " --dendcol #{(@params['dgea_cluster_by_samples'] == 'on')} "\
-        ' --dev TRUE'
+        " #{option_to_flag(@params['gsea_cluster_by_genes'], '--dendrow')}" \
+        " #{option_to_flag(@params['gsea_cluster_by_samples'], '--dendcol')}" \
+        ' --dev'
       end
 
       def gsea_cmd
         "Rscript #{File.join(GeoDiver.root, 'RCore/gage.R')}" \
         " --dbrdata #{dbrdata} --rundir '#{@run_dir}/'" \
-        " --accession #{@params['geo_db']} --factor \"#{@params['factor']}\"" \
+        " --factor \"#{@params['factor']}\"" \
         " --popA \"#{to_comma_delimited_string(@params['groupa'])}\"" \
         " --popB \"#{to_comma_delimited_string(@params['groupb'])}\"" \
         " --comparisontype '#{@params['gsea_type']}'"\
@@ -184,15 +186,27 @@ module GeoDiver
         " --clustering '#{@params['gsea_heatmap_clustering_method']}'" \
         " --clusterby '#{gage_clusterby_method}'" \
         " --heatmaprows #{@params['gsea_heatmap_rows']} " \
-        " --dendrow #{(@params['gsea_cluster_by_genes'] == 'on')} "\
-        " --dendcol #{(@params['gsea_cluster_by_samples'] == 'on')} "\
-        ' --dev TRUE'
+        " #{option_to_flag(@params['gsea_cluster_by_genes'], '--dendrow')}" \
+        " #{option_to_flag(@params['gsea_cluster_by_samples'], '--dendcol')}" \
+        ' --dev'
       end
 
       def compress_files(run_dir, geodb)
         cmd = "zip -jr '#{run_dir}/#{geodb}_geodiver_results.zip' '#{run_dir}'"
         logger.debug("Running CMD: #{cmd}")
-        system("#{cmd}")
+        system(cmd)
+      end
+
+      def compress_svg_files(run_dir)
+        compress_svg(File.join(run_dir, 'dgea_heatmap.svg'))
+        compress_svg(File.join(run_dir, 'gage_heatmap.svg'))
+      end
+
+      def compress_svg(input)
+        return unless File.exist?(input)
+        cmd = "svgo #{input} #{input}.temp"
+        system(cmd)
+        FileUtils.mv("#{input}.temp", input, force: true)
       end
 
       def analyses_to_carry_out
@@ -214,11 +228,15 @@ module GeoDiver
       end
 
       def dgea_clusterby_method
-        (@params['dgea_cluster_based_on'] == 'on') ? 'Complete' : 'Toptable'
+        @params['dgea_cluster_based_on'] == 'on' ? 'Complete' : 'Toptable'
       end
 
       def gage_clusterby_method
-        (@params['gsea_cluster_based_on'] == 'on') ? 'Complete' : 'Toptable'
+        @params['gsea_cluster_based_on'] == 'on' ? 'Complete' : 'Toptable'
+      end
+
+      def option_to_flag(option, return_flag)
+        return_flag if option == 'on'
       end
 
       def dbrdata

@@ -46,21 +46,13 @@ html lang="en"
         a#logo-container.brand-logo.white-text.hide-on-large-only href="#{request.base_url}"
           | &nbsp;GeoDiver
         ul.hide-on-med-and-down.navbar_centered
-          - if uri =~ %r{/analyse}
-            li.active
-              a.white-text href="/analyse"  Analyse               
-            li
-              a.white-text href="/my_results"  My Results 
-          - elsif uri =~ %r{/my_results}
-            li
-              a.white-text href="/analyse"  Analyse               
-            li.active
-              a.white-text href="/my_results"  My Results 
-          - else
-            li
-              a.white-text href="/analyse"  Analyse               
-            li
-              a.white-text href="/my_results"  My Results 
+          li class=('active' if uri =~ %r{/analyse} )
+            a.white-text href="#{request.base_url}/analyse"  Analyse               
+          li class=('active' if uri =~ %r{/my_results} )
+            - if session[:user].nil?
+              a.white-text href="#login_modal"  My Results
+            - else
+              a.white-text href="#{request.base_url}/my_results"  My Results
         ul.right.hide-on-med-and-down style="position:absolute;top:0 !important;right:0;"
           - if ! session[:user].nil?
             li.user data-user="#{Base64.encode64(session[:user].info['email']).chomp}"
@@ -71,7 +63,7 @@ html lang="en"
                 .clearfix
           - else      
             li
-              a.white-text href="/auth/google_oauth2" 
+              a.login_button.white-text 
                 i.material-icons.right> perm_identity
                 | Login
         .container
@@ -79,11 +71,15 @@ html lang="en"
             i.material-icons.white-text menu
         ul#nav-mobile.side-nav
           li
-            a href="/analyse"  Analyse
+            a href="#{request.base_url}/analyse"  Analyse
           li
-            a href="/my_results"  My Results
-          li
-            a href="/logout"  Logout
+            a href="#{request.base_url}/my_results"  My Results
+          - if ! session[:user].nil?
+            li
+              a.login_button  Login
+          - else 
+            li
+              a href="#{request.base_url}/logout"  Logout
     == yield
     #loading_modal.modal
       .modal-content
@@ -134,21 +130,60 @@ html lang="en"
         a.modal-action.modal-close.waves-effect.waves-green.btn-flat.left href="#!"   Cancel
         a.delete-results.waves-effect.waves-red.btn-flat   Delete
 
+    #login_modal.modal
+      .modal-content
+        h4 Please login to see the results of your previous analyses
+        p  We need to know who you are in order to show you the results of your previous analyses. Please click on the button below in order to login using your Google account.
+      .modal-footer
+        a.modal-action.modal-close.waves-effect.waves-red.btn-flat.left href="#!"   Cancel
+        a.login_button.waves-effect.waves-green.btn-flat  Login
 
+    #dbInfo.modal
+      .modal-content
+        h4.grey-text.text-darken-4
+          | GEO Dataset:
+          span#dataset_accession
+          i.material-icons.right.modal-close close
+        p
+          span#dataset_title.light-blue-text.text-darken-3.dataset_info_title 
+        p
+          span.light-blue-text.text-darken-3.dataset_info_header Summary:
+          br
+          span#dataset_summary
+        p
+          span.light-blue-text.text-darken-3.dataset_info_header Organism:
+          br
+          span#dataset_organism
+        p
+          span.light-blue-text.text-darken-3.dataset_info_header Citations:
+          br
+          span#dataset_citation 
+      .modal-footer
+        a.modal-action.modal-close.waves-effect.waves-green.btn-flat href="#!"  Close
 
-    script src="https://code.jquery.com/jquery-2.1.1.min.js" 
-    script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"
-    script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"
+    script src="https://code.jquery.com/jquery-3.1.1.min.js" 
+    script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"
+    script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.min.js"
     script src="https://cdn.plot.ly/plotly-latest.min.js" 
-    script src="//cdn.datatables.net/1.10.10/js/jquery.dataTables.js"
+    script src="//cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"
     script src="#{uri('assets/js/geodiver-' + GeoDiver::VERSION + '.min.js')}"
+    javascript: 
+      GD.CLIENT_ID = "#{ENV['GOOGLE_KEY']}"
     - if request.path_info =~ %r{^/result/} || request.path_info =~ %r{^/sh/} || request.path_info =~ %r{^/my_results}
       javascript:
         $( document ).ready(function() {
             GD.createPlots();
-            $('.modal-trigger').leanModal();
+            $('.modal').modal();
             GD.download_all_results();
             GD.delete_result();
             GD.share_result();
             GD.remove_share();
+            GD.show_GeoDB_modal();
+            if ($('#open_info_modal').exists()) {
+              var accession = $('#open_info_modal').data('accession');
+              GD.addGeoDbInfo(accession);
+              $('#open_info_modal').on('click', function() {
+                $('#dbInfo').modal('open');
+              });
+            }
         });

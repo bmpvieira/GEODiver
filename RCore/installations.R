@@ -16,7 +16,27 @@ biocLite("gageData")
 biocLite("GO.db")
 biocLite("pathview")
 biocLite("limma")
-biocLite("org.Mm.eg.db")
+biocLite('impute')
+# Species database
+biocLite("org.Ag.eg.db") # "Anopheles" "aga" "eg"
+biocLite("org.At.tair.db") # "Arabidopsis" "ath" "tair"
+biocLite("org.Bt.eg.db") # "Bovine" "bta" "eg"
+biocLite("org.Ce.eg.db") # "Worm" "cel" "eg"
+biocLite("org.Cf.eg.db") # "Canine" "cfa" "eg"
+biocLite("org.Dm.eg.db") # "Fly" "dme" "eg"
+biocLite("org.Dr.eg.db") # "Zebrafish" "dre" "eg"
+biocLite("org.EcK12.eg.db") # "E coli strain K12" "eco" "eg"
+biocLite("org.EcSakai.eg.db") # "E coli strain Sakai" "ecs" "eg"
+biocLite("org.Gg.eg.db") # "Chicken" "gga" "eg"
+biocLite("org.Hs.eg.db") # "Human" "hsa" "eg"
+biocLite("org.Mm.eg.db") # "Mouse" "mmu" "eg"
+biocLite("org.Mmu.eg.db") # "Rhesus" "mcc" "eg"
+biocLite("org.Pf.plasmo.db") # "Malaria" "pfa" "orf"
+biocLite("org.Pt.eg.db") # "Chimp" "ptr" "eg"
+biocLite("org.Rn.eg.db") # "Rat" "rno" "eg"
+biocLite("org.Sc.sgd.db") # "Yeast" "sce" "orf"
+biocLite("org.Ss.eg.db") # "Pig" "ssc" "eg"
+biocLite("org.Xl.eg.db") # "Xenopus" "xla" "eg"
 install.packages("argparser")
 install.packages("Cairo")
 install.packages("dendextend")
@@ -44,6 +64,7 @@ install.packages("squash")
 # argparser     - https://cran.r-project.org/web/packages/argparser/index.html
 # Cairo         - https://cran.r-project.org/web/packages/Cairo/index.html
 # dendextend    - https://cran.r-project.org/web/packages/dendextend/index.html
+# impute        - http://svitsrv25.epfl.ch/R-doc/library/impute/html/impute.knn.html
 # DMwR          - https://cran.r-project.org/web/packages/DMwR/index.html
 # ggplot2       - https://cran.r-project.org/web/packages/ggplot2/index.html
 # gplots        - https://cran.r-project.org/web/packages/gplots/index.html

@@ -39,7 +39,7 @@ module GeoDiver
         BindAddress: app.config[:host],
         Port: app.config[:port],
         StartCallback: proc { app.on_start },
-        StopCallback: proc { app.on_stop  },
+        StopCallback: proc { app.on_stop },
         OutputBufferSize: 5,
         AccessLog: [[logdev, WEBrick::AccessLog::COMMON_LOG_FORMAT]],
         Logger: WEBrick::Log.new(logdev)

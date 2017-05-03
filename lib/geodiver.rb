@@ -32,6 +32,7 @@ module GeoDiver
       @config = Config.new(config)
 
       init_dirs
+      set_up_default_user_dir
       check_num_threads
 
       self
@@ -108,6 +109,15 @@ module GeoDiver
       end
       logger.debug "Public Directory: #{public_dir}"
       public_dir
+    end
+
+    def set_up_default_user_dir()
+      user_dir    = File.join(GeoDiver.users_dir, 'geodiver')
+      user_public = File.join(GeoDiver.public_dir, 'GeoDiver/Users')
+      FileUtils.mkdir(user_dir) unless Dir.exist?(user_dir)
+      unless File.exist? File.join(user_public, 'geodiver')
+        FileUtils.ln_s(user_dir, user_public)
+      end
     end
 
     def check_num_threads

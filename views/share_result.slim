@@ -17,7 +17,7 @@ html lang="en"
     nav.blue.darken-4
       .nav-wrapper
         span.hide-on-med-and-down.logo
-          img height="64" src="#{uri('assets/img/logo.min.svg')}" alt="GeoDiver Logo"
+          img height="64" src="#{uri('assets/img/geodiver-white.min.svg')}" alt="GeoDiver Logo"
         a#logo-container.brand-logo.white-text href="#{request.base_url}"
           | &nbsp;GeoDiver
         ul.hide-on-med-and-down.navbar_centered
@@ -27,7 +27,7 @@ html lang="en"
             a.white-text href="/auth/google_oauth2"  My Results 
         ul.right.hide-on-med-and-down
           li
-            a.white-text href="/auth/google_oauth2" 
+            a.login_button.white-text
               i.material-icons.right> perm_identity
               | Login
         .container
@@ -35,16 +35,18 @@ html lang="en"
             i.material-icons.white-text menu
         ul#nav-mobile.side-nav
           li
-            a href="/auth/google_oauth2"  Login
+            a.login_button  Login
     .container
       #results_section.section
         .card.results_card data-user="#{@results['user']}" data-geodb="#{@results['geo_db']}" data-result="#{@results['uniq_result_id']}" data-share-link="#{@results['share_url']}" data-results-link="#{@results['results_url']}"
           .card-content style="padding: 1.5rem 3.5rem;"
-            span#results.card-title.light-blue-text.text-darken-3 style=("font-size: 2rem; padding: 2rem 0; font-weight: 400;")
-              | GeoDiver Results: #{@results['geo_db']}
             .actions.right style=" display: -webkit-flex; margin-left: auto; padding: 10px 0;"
+              a#open_info_modal.waves-effect.btn-flat.nopadding.light-blue-text.text-darken-3 data-accession="#{@results['geo_db']}" style="min-width:36px;padding:0 8px;margin-right:0px"
+                i.material-icons  info_outline
               a#download-all-results.waves-effect.btn-flat.nopadding.light-blue-text.text-darken-3 data-download="#{@results['assets_path']}/#{@results['geo_db']}_geodiver_results.zip" style="min-width:36px;padding:0 8px;margin-right:0px"
                 i.material-icons  file_download
+            span#results.card-title.light-blue-text.text-darken-3 style=("font-size: 2rem; font-weight: 400;")
+              | GeoDiver Results: #{@results['geo_db']}
           - if @results['overview_exit_code'].to_i == 0
             .card-action
               span#overview.card-title.light-blue-text.text-darken-3 style=("padding-left:0;") data-overview-json="#{@results['assets_path']}/data.json"
@@ -252,19 +254,42 @@ html lang="en"
         a.modal-action.modal-close.waves-effect.waves-green.btn-flat.left href="#!"   Cancel
         a.delete-results.waves-effect.waves-red.btn-flat   Delete
 
+    #dbInfo.modal
+      .modal-content
+        h4.grey-text.text-darken-4
+          | GEO Dataset:
+          span#dataset_accession
+          i.material-icons.right close
+        p
+          span#dataset_title.light-blue-text.text-darken-3.dataset_info_title 
+        p
+          span.light-blue-text.text-darken-3.dataset_info_header Summary:
+          br
+          span#dataset_summary
+        p
+          span.light-blue-text.text-darken-3.dataset_info_header Organism:
+          br
+          span#dataset_organism
+        p
+          span.light-blue-text.text-darken-3.dataset_info_header Citations:
+          br
+          span#dataset_citation 
+      .modal-footer
+        a.modal-action.modal-close.waves-effect.waves-green.btn-flat href="#!"  Close
 
-    script src="https://code.jquery.com/jquery-2.1.1.min.js" 
-    script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"
-    script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"
+    script src="https://code.jquery.com/jquery-3.1.1.min.js" 
+    script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"
+    script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.min.js"
     script src="https://cdn.plot.ly/plotly-latest.min.js" 
-    script src="//cdn.datatables.net/1.10.10/js/jquery.dataTables.js"
+    script src="//cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"
     script src="#{uri('assets/js/geodiver-' + GeoDiver::VERSION + '.min.js')}"
     javascript:
       $( document ).ready(function() {
           GD.createPlots();
-          $('.modal-trigger').leanModal();
+          $('.modal-trigger').modal();
           GD.download_all_results();
           GD.delete_result();
           GD.share_result();
           GD.remove_share();
+          GD.show_GeoDB_modal();
       });
