@@ -88,23 +88,20 @@ module GeoDiver
 
       #
       def download_geo_file(geo_accession)
-        if geo_accession =~ /^GDS/
-          remote_dir = generate_remote_gds_url(geo_accession)
-          file = "#{geo_accession}.soft.gz"
-        elsif geo_accession =~ /^GSE/
-          remote_dir = generate_remote_gse_url(geo_accession)
-          file = "#{geo_accession}_series_matrix.txt.gz"
-        end
+        remote_url = generate_remote_url(geo_accession)
+        logger.debug "Remote URL: #{remote_url}"
+        return if remote_url.empty? || remote_url.nil?
         output_dir = File.join(db_dir, geo_accession)
         FileUtils.mkdir(output_dir) unless Dir.exist? output_dir
+        file = File.basename(remote_url)
         compressed = File.join(output_dir, file)
-        wget_geo_file(remote_dir, compressed, geo_accession, output_dir)
+        wget_geo_file(remote_url, compressed, geo_accession, output_dir)
         compressing_geo_file(compressed)
       end
 
-      def wget_geo_file(remote_dir, compressed, geo_accession, output_dir)
-        logger.debug("Downloading from: #{remote_dir} ==> #{compressed}")
-        `wget #{remote_dir} -O #{compressed} || rm -r #{output_dir}`
+      def wget_geo_file(remote_url, compressed, geo_accession, output_dir)
+        logger.debug("Downloading from: #{remote_url} ==> #{compressed}")
+        `wget #{remote_url} -O #{compressed} || rm -r #{output_dir}`
         return if $CHILD_STATUS.exitstatus.zero?
         logger.debug "Cannot find Geo Dataset on GEO: #{geo_accession}"
         raise ArgumentError, "Cannot find Geo Dataset on GEO: #{geo_accession}"
@@ -117,27 +114,16 @@ module GeoDiver
       end
 
       #
-      def generate_remote_gds_url(geo_accession)
+      def generate_remote_url(geo_accession)
         cmd = "bionode-ncbi search gds #{geo_accession} |"\
               " jq -cr 'select(.accession == \"#{geo_accession}\") | .ftplink'"
         url = `#{cmd}`.chomp!
         return if url.nil? || url.empty?
-        url + geo_accession + '.soft.gz' 
-      end
-
-      def generate_remote_gse_url(geo_accession)
-        if geo_accession.length <= 6
-          dir = 'GSEnnn'
-        else
-          if geo_accession.length == 8
-            dir_number = geo_accession.match(/GSE(\d\d)\d+/)[1]
-          elsif geo_accession.length == 7
-            dir_number = geo_accession.match(/GSE(\d)\d+/)[1]
-          end
-          dir = "GSE#{dir_number}nnn"
+        if geo_accession =~ /^GDS/
+          url + 'soft/' + geo_accession + '.soft.gz' 
+        elsif geo_accession =~ /^GSE/
+          url + 'matrix/' + geo_accession + '_series_matrix.txt.gz' 
         end
-        "ftp://ftp.ncbi.nlm.nih.gov/geo/series/#{dir}/#{geo_accession}" \
-        "/matrix/#{geo_accession}_series_matrix.txt.gz"
       end
 
       # Loads the file into memory line by line

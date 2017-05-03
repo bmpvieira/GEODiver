@@ -52,12 +52,10 @@ module GeoDiver
       end
 
       def check_gds_ftp_folders
-        return 20
         i = 1
         loop do
           `wget -q --spider ftp://ftp.ncbi.nlm.nih.gov/geo/datasets/GDS#{i}nnn/`
-          exit_code = $CHILD_STATUS.exitstatus
-          break if exit_code != 0
+          break if $CHILD_STATUS.exitstatus != 0
           i += 1
         end
         i
