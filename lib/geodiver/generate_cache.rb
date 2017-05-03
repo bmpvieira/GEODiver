@@ -14,7 +14,7 @@ module GeoDiver
 
       def run
         logger.debug "GeoDiver DB Directory #{GeoDiver.db_dir}"
-        upperlimit = check_gds_ftp_folders * 1
+        upperlimit = check_gds_ftp_folders * 1000
         p = Pool.new(GeoDiver.config[:num_threads])
         (1..upperlimit).each do |idx|
           p.schedule(idx) { |i| generate_cache("GDS#{i}") }
