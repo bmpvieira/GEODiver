@@ -12,12 +12,24 @@ module GeoDiver
 
       def_delegators GeoDiver, :logger
 
-      def run
+      def run_gds
         logger.debug "GeoDiver DB Directory #{GeoDiver.db_dir}"
-        upperlimit = check_gds_ftp_folders * 1000
+        gds_upperlimit = check_gds_ftp_folders * 1000
         p = Pool.new(GeoDiver.config[:num_threads])
-        (1..upperlimit).each do |idx|
+        (1..gds_upperlimit).each do |idx|
           p.schedule(idx) { |i| generate_cache("GDS#{i}") }
+        end
+      ensure
+        p.shutdown
+      end
+
+      def run_gse
+        logger.debug "GeoDiver DB Directory #{GeoDiver.db_dir}"
+        # gds_upperlimit = check_gse_ftp_folders * 1000
+        gds_upperlimit = 5
+        p = Pool.new(GeoDiver.config[:num_threads])
+        (1..gds_upperlimit).each do |idx|
+          p.schedule(idx) { |i| generate_cache("GSE#{i}") }
         end
       ensure
         p.shutdown
@@ -55,6 +67,16 @@ module GeoDiver
         i = 1
         loop do
           `wget -q --spider ftp://ftp.ncbi.nlm.nih.gov/geo/datasets/GDS#{i}nnn/`
+          break if $CHILD_STATUS.exitstatus != 0
+          i += 1
+        end
+        i
+      end
+
+      def check_gse_ftp_folders
+        i = 1
+        loop do
+          `wget -q --spider ftp://ftp.ncbi.nlm.nih.gov/geo/datasets/GSE#{i}nnn/`
           break if $CHILD_STATUS.exitstatus != 0
           i += 1
         end

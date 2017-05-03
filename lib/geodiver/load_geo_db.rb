@@ -93,7 +93,7 @@ module GeoDiver
         return if remote_url.empty? || remote_url.nil?
         output_dir = File.join(db_dir, geo_accession)
         FileUtils.mkdir(output_dir) unless Dir.exist? output_dir
-        file = File.basename(remote_url)
+        file = File.basename(remote_url).delete('*')
         compressed = File.join(output_dir, file)
         wget_geo_file(remote_url, compressed, geo_accession, output_dir)
         compressing_geo_file(compressed)
@@ -120,9 +120,9 @@ module GeoDiver
         url = `#{cmd}`.chomp!
         return if url.nil? || url.empty?
         if geo_accession =~ /^GDS/
-          url + 'soft/' + geo_accession + '.soft.gz' 
+          url + 'soft/' + geo_accession + '.soft.gz'
         elsif geo_accession =~ /^GSE/
-          url + 'matrix/' + geo_accession + '_series_matrix.txt.gz' 
+          url + 'matrix/' + geo_accession + '*_series_matrix.txt.gz'
         end
       end
 
