@@ -42,9 +42,9 @@ data(bods)
 #############################################################################
 
 parser <- arg_parser("Input GEO Dataset")
-parser <- add_argument(parser, "--accession", default = "GSE51808",
+parser <- add_argument(parser, "--accession", default = "GSE64457",
                        help = "Accession Number of the GEO Database")
-parser <- add_argument(parser, "--outrdata", default = "GSE51808.RData",
+parser <- add_argument(parser, "--outrdata", default = "GSE64457.RData",
                        help = "Full path to the output rData file")
 parser <- add_argument(parser, "--geodbDir", default = ".",
                        help = "Full path to the database directory")
@@ -79,9 +79,25 @@ if (grepl('^GDS', argv$accession)) {
 } else if (grepl('^GSE', argv$accession)) {
   if (length(gset) > 1) idx <- grep(gset@annotation, attr(gse, "names")) else idx <- 1
   eset           <- gset[[idx]]
-  gene.names     <- as.character(eset@featureData@data[, "Gene Symbol"])
-  organism       <- as.character(eset@featureData@data[, "Species Scientific Name"][1])
   featureData    <- eset@featureData@data
+  if ("Gene Symbol" %in% colnames(featureData)) {
+    gene.names   <- as.character(featureData[, "Gene Symbol"])
+  } else if ("Symbol" %in% colnames(featureData)) {
+    gene.names   <- as.character(featureData[, "Symbol"])
+  } else {
+    cat("ERROR: Bad dataset: Unable to find Symbol in the featureData object", file=stderr())
+    quit(save = "no", status = 2, runLast = FALSE)
+
+  }
+  if ("Species Scientific Name" %in% colnames(featureData)) {
+    organism     <- as.character(featureData[, "Species Scientific Name"][1])
+  } else if ("Species" %in% colnames(featureData)) {
+    organism     <- as.character(featureData[, "Species"][1])
+  } else {
+    cat("ERROR: Bad dataset: Unable to find Species in the featureData object", file=stderr())
+    quit(save = "no", status = 3, runLast = FALSE)
+
+  }
 }
 
 X      <- exprs(eset) # Get Expression Data
@@ -104,7 +120,7 @@ tryCatch({
   X          <- imputation$data
 }, error=function(e) {
   cat("ERROR: Bad dataset: Unable to run KNN imputation on the dataset.", file=stderr())
-  quit(save = "no", status = 1, runLast = FALSE)
+  quit(save = "no", status = 4, runLast = FALSE)
 })
 
 # If not log transformed, do the log2 transformed
@@ -121,6 +137,8 @@ organism.common.name <- as.character(bods[which(bods[, "kegg code"] == organism.
 entrez.gene.id <- tryCatch({
   if (c('ENTREZ_GENE_ID') %in% names(featureData)) {
     featureData[, 'ENTREZ_GENE_ID']
+  } else if (c('Entrez_Gene_ID') %in% names(featureData)) {
+    featureData[, 'Entrez_Gene_ID']
   } else {
     package <-as.character(bods[which(bods[, "kegg code"] == organism.scientific.name), "package"])
     # Create two column table containing entrez IDs for geodataset
