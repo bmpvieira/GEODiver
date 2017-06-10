@@ -42,9 +42,9 @@ data(bods)
 #############################################################################
 
 parser <- arg_parser("Input GEO Dataset")
-parser <- add_argument(parser, "--accession", default = "GSE64457",
+parser <- add_argument(parser, "--accession", default = "GSE3",
                        help = "Accession Number of the GEO Database")
-parser <- add_argument(parser, "--outrdata", default = "GSE64457.RData",
+parser <- add_argument(parser, "--outrdata", default = "GSE3.RData",
                        help = "Full path to the output rData file")
 parser <- add_argument(parser, "--geodbDir", default = ".",
                        help = "Full path to the database directory")
@@ -67,8 +67,11 @@ scalable <- function(X) {
 #############################################################################
 #                        GEO Input                                          #
 #############################################################################
-
-gset <- getGEO(argv$accession, GSEMatrix = TRUE, destdir=argv$geodbDir)
+tryCatch({
+  gset <- getGEO(argv$accession, GSEMatrix = TRUE, destdir=argv$geodbDir)
+}, error = function(error) {
+  gset <- getGEO(argv$accession, GSEMatrix = TRUE )
+})
 
 if (grepl('^GDS', argv$accession)) {
   eset           <- GDS2eSet(gset, do.log2 = FALSE)
@@ -77,8 +80,8 @@ if (grepl('^GDS', argv$accession)) {
   gpl            <- getGEO(Meta(gset)$platform, destdir=argv$geodbDir)
   featureData    <- gpl@dataTable@table
 } else if (grepl('^GSE', argv$accession)) {
-  if (length(gset) > 1) idx <- grep(gset@annotation, attr(gse, "names")) else idx <- 1
-  eset           <- gset[[idx]]
+  if (length(gset) > 1) idx <- grep(gset@annotation, attr(gset, "names")) else idx <- 1
+  eset           <- gset[[1]]
   featureData    <- eset@featureData@data
   if ("Gene Symbol" %in% colnames(featureData)) {
     gene.names   <- as.character(featureData[, "Gene Symbol"])
@@ -87,7 +90,6 @@ if (grepl('^GDS', argv$accession)) {
   } else {
     cat("ERROR: Bad dataset: Unable to find Symbol in the featureData object", file=stderr())
     quit(save = "no", status = 2, runLast = FALSE)
-
   }
   if ("Species Scientific Name" %in% colnames(featureData)) {
     organism     <- as.character(featureData[, "Species Scientific Name"][1])
@@ -96,7 +98,6 @@ if (grepl('^GDS', argv$accession)) {
   } else {
     cat("ERROR: Bad dataset: Unable to find Species in the featureData object", file=stderr())
     quit(save = "no", status = 3, runLast = FALSE)
-
   }
 }
 

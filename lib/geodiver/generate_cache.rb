@@ -50,7 +50,9 @@ module GeoDiver
           FileUtils.touch File.join(GeoDiver.db_dir, geo_accession, '.failed')
         end
       rescue ArgumentError
-        logger.debug "GEO DB not found: #{geo_accession} "
+        logger.debug "GEO DB not found: #{geo_accession}"
+      rescue
+        logger.debug "GEO DB Failed: #{geo_accession}"
       end
 
       def load_geo_db_cmd(geo_accession)
