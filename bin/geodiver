@@ -136,7 +136,7 @@ MSG
 
       GeoDiver.config.write_config_file if set?
       GeoDiver.config.write_config_file if fetch_option(:set).value
-      
+
       if gds_cache?
         require 'geodiver/generate_cache'
         GeoDiver::GdsCache.run_gds
