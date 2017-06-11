@@ -25,10 +25,10 @@ module GeoDiver
 
       def run_gse
         logger.debug "GeoDiver DB Directory #{GeoDiver.db_dir}"
-        # gds_upperlimit = check_gse_ftp_folders * 1000
-        gds_upperlimit = 10
+        # gse_upperlimit = check_gse_ftp_folders * 1000
+        gse_upperlimit = 100_000
         p = Pool.new(GeoDiver.config[:num_threads])
-        (1..gds_upperlimit).each do |idx|
+        (1..gse_upperlimit).each do |idx|
           p.schedule(idx) { |i| generate_cache("GSE#{i}") }
         end
       ensure
