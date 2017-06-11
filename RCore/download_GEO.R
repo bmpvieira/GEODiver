@@ -87,6 +87,8 @@ if (grepl('^GDS', argv$accession)) {
     gene.names   <- as.character(featureData[, "Gene Symbol"])
   } else if ("Symbol" %in% colnames(featureData)) {
     gene.names   <- as.character(featureData[, "Symbol"])
+  } else if ("PLATE_ID" %in% colnames(featureData)) {
+    gene.names   <- as.character(featureData[, "PLATE_ID"])
   } else {
     cat("ERROR: Bad dataset: Unable to find Symbol in the featureData object", file=stderr())
     quit(save = "no", status = 2, runLast = FALSE)
