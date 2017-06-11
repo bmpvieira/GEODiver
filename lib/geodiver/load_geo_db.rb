@@ -52,7 +52,7 @@ module GeoDiver
         return if File.exist?(File.join(db_dir, geo_accession,
                                         "#{geo_accession}.RData"))
         logger.debug("Running: #{load_geo_db_cmd(geo_accession)}")
-        Thread.new { system(load_geo_db_cmd(geo_accession)) }
+        Thread.new { run_load_geo_db_cmd(geo_accession) }
         # TODO: check exit status of the system call
       end
 
@@ -101,7 +101,7 @@ module GeoDiver
 
       def wget_geo_file(remote_url, compressed, geo_accession, output_dir)
         logger.debug("Downloading from: #{remote_url} ==> #{compressed}")
-        `wget #{remote_url} -O #{compressed} || rm -r #{output_dir}`
+        `wget -q #{remote_url} -O #{compressed} || rm -r #{output_dir}`
         return if $CHILD_STATUS.exitstatus.zero?
         logger.debug "Cannot find Geo Dataset on GEO: #{geo_accession}"
         raise ArgumentError, "Cannot find Geo Dataset on GEO: #{geo_accession}"
@@ -223,13 +223,21 @@ module GeoDiver
 
       #
       def load_geo_db_cmd(geo_accession)
+        rdata_file = File.join(geo_db_dir, "#{geo_accession}.RData")
         geo_db_dir = File.join(db_dir, geo_accession)
         "Rscript #{File.join(GeoDiver.root, 'RCore/download_GEO.R')}" \
         " --accession #{geo_accession}" \
-        " --outrdata  #{File.join(geo_db_dir, "#{geo_accession}.RData")}" \
-        " --geodbDir #{geo_db_dir}" \
-        " && echo 'Finished creating Rdata file:" \
-        " #{File.join(geo_db_dir, "#{geo_accession}.RData")}'"
+        " --outrdata  #{rdata_file} --geodbDir #{geo_db_dir}"
+      end
+
+      def run_load_geo_db_cmd(geo_accession)
+        rdata_file = File.join(geo_db_dir, "#{geo_accession}.RData")
+        system(load_geo_db_cmd(geo_accession))
+        if File.exist? rdata_file
+          logger.debug("Finished creating Rdata file: #{rdata_file}")
+        else
+          logger.debug("Did not create Rdata file: #{rdata_file}")
+        end
       end
     end
   end

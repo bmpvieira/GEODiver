@@ -26,7 +26,7 @@ module GeoDiver
       def run_gse
         logger.debug "GeoDiver DB Directory #{GeoDiver.db_dir}"
         # gds_upperlimit = check_gse_ftp_folders * 1000
-        gds_upperlimit = 5
+        gds_upperlimit = 10
         p = Pool.new(GeoDiver.config[:num_threads])
         (1..gds_upperlimit).each do |idx|
           p.schedule(idx) { |i| generate_cache("GSE#{i}") }
@@ -43,7 +43,7 @@ module GeoDiver
         logger.debug "#{geo_accession}: Running: #{cmd}"
         `#{cmd}`
         logger.debug "#{geo_accession}: Exit Code: #{$CHILD_STATUS.exitstatus}"
-        if $CHILD_STATUS.exitstatus == 0
+        if $CHILD_STATUS.exitstatus.zero?
           logger.debug "#{geo_accession}: Cleaning up folder"
           cleanup(geo_accession)
         else

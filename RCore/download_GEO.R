@@ -42,9 +42,9 @@ data(bods)
 #############################################################################
 
 parser <- arg_parser("Input GEO Dataset")
-parser <- add_argument(parser, "--accession", default = "GSE3",
+parser <- add_argument(parser, "--accession", default = "GSE55252",
                        help = "Accession Number of the GEO Database")
-parser <- add_argument(parser, "--outrdata", default = "GSE3.RData",
+parser <- add_argument(parser, "--outrdata", default = "GSE55252.RData",
                        help = "Full path to the output rData file")
 parser <- add_argument(parser, "--geodbDir", default = ".",
                        help = "Full path to the database directory")

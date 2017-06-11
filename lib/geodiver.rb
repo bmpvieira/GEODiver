@@ -89,7 +89,7 @@ module GeoDiver
       @public_dir = create_public_dir
       @users_dir  = File.expand_path('../Users', @public_dir)
       FileUtils.mkdir_p @users_dir unless Dir.exist? @users_dir
-      @db_dir     = File.expand_path('../DBs', @public_dir)
+      @db_dir = File.expand_path('../DBs', @public_dir)
       FileUtils.mkdir_p @db_dir unless Dir.exist? @db_dir
     end
 
@@ -98,39 +98,34 @@ module GeoDiver
     def create_public_dir
       public_dir = File.join(config[:gd_public_dir], 'public')
       if Dir.exist?(public_dir) &&
-         ! File.exist?(File.join(public_dir, 'assets/css',
-                                 "style-#{GeoDiver::VERSION}.min.css"))
+         !File.exist?(File.join(public_dir, 'assets/css',
+                                "style-#{GeoDiver::VERSION}.min.css"))
         FileUtils.rm_r File.join(public_dir, 'assets')
-        FileUtils.cp_r(File.join(GeoDiver.root, 'public/assets'), public_dir)
       else
         FileUtils.mkdir_p public_dir
         FileUtils.cp_r(File.join(GeoDiver.root, 'public/GeoDiver'), public_dir)
-        FileUtils.cp_r(File.join(GeoDiver.root, 'public/assets'), public_dir)
       end
+      FileUtils.cp_r(File.join(GeoDiver.root, 'public/assets'), public_dir)
       logger.debug "Public Directory: #{public_dir}"
       public_dir
     end
 
-    def set_up_default_user_dir()
+    def set_up_default_user_dir
       user_dir    = File.join(GeoDiver.users_dir, 'geodiver')
       user_public = File.join(GeoDiver.public_dir, 'GeoDiver/Users')
       FileUtils.mkdir(user_dir) unless Dir.exist?(user_dir)
-      unless File.exist? File.join(user_public, 'geodiver')
-        FileUtils.ln_s(user_dir, user_public)
-      end
+      return if File.exist? File.join(user_public, 'geodiver')
+      FileUtils.ln_s(user_dir, user_public)
     end
 
     def check_num_threads
       config[:num_threads] = Integer(config[:num_threads])
-      fail NUM_THREADS_INCORRECT unless config[:num_threads] > 0
+      raise NUM_THREADS_INCORRECT unless config[:num_threads] > 0
 
       logger.debug "Will use #{config[:num_threads]} threads to run GeoDiver."
-      if config[:num_threads] > 256
-        logger.warn "Number of threads set at #{config[:num_threads]} is" \
-                    ' unusually high.'
-      end
-    rescue
-      raise NUM_THREADS_INCORRECT
+      return unless config[:num_threads] > 256
+      logger.warn "Number of threads set at #{config[:num_threads]} is" \
+                  ' unusually high.'
     end
 
     # Check and warn user if host is 0.0.0.0 (default).
