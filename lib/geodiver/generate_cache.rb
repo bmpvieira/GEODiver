@@ -47,7 +47,8 @@ module GeoDiver
           logger.debug "#{geo_accession}: Cleaning up folder"
           cleanup(geo_accession)
         else
-          FileUtils.touch File.join(GeoDiver.db_dir, geo_accession, '.failed')
+          FileUtils.touch File.join(GeoDiver.db_dir, geo_accession,
+                                    "#{$CHILD_STATUS.exitstatus}.failed")
         end
       rescue ArgumentError
         logger.debug "GEO DB not found: #{geo_accession}"
