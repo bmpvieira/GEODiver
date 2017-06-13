@@ -223,8 +223,8 @@ module GeoDiver
 
       #
       def load_geo_db_cmd(geo_accession)
-        rdata_file = File.join(geo_db_dir, "#{geo_accession}.RData")
         geo_db_dir = File.join(db_dir, geo_accession)
+        rdata_file = File.join(geo_db_dir, "#{geo_accession}.RData")
         "Rscript #{File.join(GeoDiver.root, 'RCore/download_GEO.R')}" \
         " --accession #{geo_accession}" \
         " --outrdata  #{rdata_file} --geodbDir #{geo_db_dir}"
