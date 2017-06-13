@@ -231,6 +231,7 @@ module GeoDiver
       end
 
       def run_load_geo_db_cmd(geo_accession)
+        geo_db_dir = File.join(db_dir, geo_accession)
         rdata_file = File.join(geo_db_dir, "#{geo_accession}.RData")
         system(load_geo_db_cmd(geo_accession))
         if File.exist? rdata_file
