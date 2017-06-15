@@ -6,8 +6,8 @@
 # Run           : Rscript dgea_expression.R  --rundir ~/Desktop/ --geneid LOC100288410
 # ---------------------------------------------------------------------------
 
-suppressMessages(library('argparser'))    # Argument passing
-suppressMessages(library('jsonlite'))     # Convert R object to JSON format
+suppressMessages(library("argparser"))    # Argument passing
+suppressMessages(library("jsonlite"))     # Convert R object to JSON format
 
 #############################################################################
 #                        Command Line Arguments                             #
@@ -25,7 +25,7 @@ argv   <- parse_args(parser)
 
 # Check if the run directory exists and if not, exit...
 if (!dir.exists(file.path(argv$rundir))) {
-  cat("ERROR: The run directory does not exist.", file=stderr())
+  cat("ERROR: The run directory does not exist.", file = stderr())
   quit(save = "no", status = 1, runLast = FALSE)
 }
 
@@ -33,12 +33,12 @@ if (!dir.exists(file.path(argv$rundir))) {
 #                          Loading Saved Dataset                            #
 #############################################################################
 
-filename <- file.path(argv$rundir,"dgea_toptable.RData")
+filename <- file.path(argv$rundir, "dgea_toptable.RData")
 
 if (file.exists(filename)) {
   load(file = filename)
 } else {
-  cat("ERROR: DGEA Toptable RData file not found.", file=stderr())
+  cat("ERROR: DGEA Toptable RData file not found.", file = stderr())
   quit(save = "no", status = 1, runLast = FALSE)
 }
 
