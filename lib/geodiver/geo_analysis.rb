@@ -35,6 +35,7 @@ module GeoDiver
         init(params, email)
         # wait until geo db has been loaded in background thread
         load_geo_db_thread.join unless load_geo_db_thread.nil?
+        assert_load_geo_db_sucess
         run_analysis
         # Compress files in the background
         Thread.new { compress_files(@run_dir, @params['geo_db']) }
@@ -44,6 +45,11 @@ module GeoDiver
       end
 
       private
+
+      def assert_load_geo_db_sucess
+        return if File.exist? db_rdata
+        raise ArgumentError, 'Unable to parse GEO dataset.'
+      end
 
       def generate_results_hash(url)
         results = { geo_db: @params['geo_db'],
@@ -144,7 +150,7 @@ module GeoDiver
 
       def overview_cmd
         "Rscript #{File.join(GeoDiver.root, 'RCore/overview.R')}" \
-        " --dbrdata #{dbrdata} --rundir '#{@run_dir}/'" \
+        " --dbrdata #{db_rdata} --rundir '#{@run_dir}/'" \
         " --analyse 'Boxplot,PCA'" \
         " --factor \"#{@params['factor']}\"" \
         " --popA \"#{to_comma_delimited_string(@params['groupa'])}\"" \
@@ -156,7 +162,7 @@ module GeoDiver
       #
       def dgea_cmd
         "Rscript #{File.join(GeoDiver.root, 'RCore/dgea.R')}" \
-        " --dbrdata #{dbrdata} --rundir '#{@run_dir}/'" \
+        " --dbrdata #{db_rdata} --rundir '#{@run_dir}/'" \
         " --analyse '#{analyses_to_carry_out.join(',')}'" \
         " --factor \"#{@params['factor']}\"" \
         " --popA \"#{to_comma_delimited_string(@params['groupa'])}\"" \
@@ -176,7 +182,7 @@ module GeoDiver
 
       def gsea_cmd
         "Rscript #{File.join(GeoDiver.root, 'RCore/gage.R')}" \
-        " --dbrdata #{dbrdata} --rundir '#{@run_dir}/'" \
+        " --dbrdata #{db_rdata} --rundir '#{@run_dir}/'" \
         " --factor \"#{@params['factor']}\"" \
         " --popA \"#{to_comma_delimited_string(@params['groupa'])}\"" \
         " --popB \"#{to_comma_delimited_string(@params['groupb'])}\"" \
@@ -239,7 +245,7 @@ module GeoDiver
         return_flag if option == 'on'
       end
 
-      def dbrdata
+      def db_rdata
         File.join(db_dir, @params['geo_db'], "#{@params['geo_db']}.RData")
       end
 

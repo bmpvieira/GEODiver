@@ -53,7 +53,6 @@ module GeoDiver
                                         "#{geo_accession}.RData"))
         logger.debug("Running: #{load_geo_db_cmd(geo_accession)}")
         Thread.new { run_load_geo_db_cmd(geo_accession) }
-        # TODO: check exit status of the system call
       end
 
       private
@@ -236,9 +235,18 @@ module GeoDiver
         system(load_geo_db_cmd(geo_accession))
         if File.exist? rdata_file
           logger.debug("Finished creating Rdata file: #{rdata_file}")
+          cleanup(geo_accession)
         else
           logger.debug("Did not create Rdata file: #{rdata_file}")
+          FileUtils.touch File.join(db_dir, geo_accession,
+                                    "#{$CHILD_STATUS.exitstatus}.failed")
         end
+      end
+
+      def cleanup(geo_accession)
+        soft_file = File.join(db_dir, geo_accession, '*.soft')
+        `rm #{soft_file}`
+        `rm #{soft_file}.gz`
       end
     end
   end
