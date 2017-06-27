@@ -23,6 +23,9 @@ parser <- add_argument(parser, "--geneid", help = "Row Id of the X matrix")
 # allow arguments to be run via the command line
 argv   <- parse_args(parser)
 
+# Force R to use Cairo to create images
+options(bitmapType = "cairo")
+
 # Check if the run directory exists and if not, exit...
 if (!dir.exists(file.path(argv$rundir))) {
   cat("ERROR: The run directory does not exist.", file = stderr())

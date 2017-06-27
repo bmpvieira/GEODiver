@@ -57,6 +57,9 @@ parser <- add_argument(parser, "--popname2",
 # allow arguments to be run via the command line
 argv   <- parse_args(parser)
 
+# Force R to use Cairo to create images
+options(bitmapType = "cairo")
+
 #############################################################################
 #                        Command Line Arguments Retrieval                   #
 #############################################################################
