@@ -70,7 +70,14 @@ scalable <- function(X) {
 tryCatch({
   gset <- getGEO(argv$accession, GSEMatrix = TRUE, destdir=argv$geodbDir)
 }, error = function(error) {
-  gset <- getGEO(argv$accession, GSEMatrix = TRUE )
+  # Try downloading again from scratch...
+  tryCatch({
+    gset <- getGEO(argv$accession, GSEMatrix = TRUE )
+  }, error=function(e) {
+    cat("ERROR: Unable to generate gset", file=stderr())
+    cat(e, file=stderr())
+    quit(save = "no", status = 1, runLast = FALSE)
+  })
 })
 
 if (grepl('^GDS', argv$accession)) {
@@ -81,8 +88,20 @@ if (grepl('^GDS', argv$accession)) {
   featureData    <- gpl@dataTable@table
 } else if (grepl('^GSE', argv$accession)) {
   if (length(gset) > 1) idx <- grep(gset@annotation, attr(gset, "names")) else idx <- 1
-  eset           <- gset[[1]]
-  featureData    <- eset@featureData@data
+  tryCatch({
+    eset           <- gset[[1]]
+  }, error=function(e) {
+    cat("ERROR: Unable to generate Eset File.", file=stderr())
+    cat(e, file=stderr())
+    quit(save = "no", status = 2, runLast = FALSE)
+  })
+  tryCatch({
+    featureData    <- eset@featureData@data
+  }, error=function(e) {
+    cat("ERROR: Unable to extract feature Data.", file=stderr())
+    cat(e, file=stderr())
+    quit(save = "no", status = 3, runLast = FALSE)
+  })
   if ("Gene Symbol" %in% colnames(featureData)) {
     gene.names   <- as.character(featureData[, "Gene Symbol"])
   } else if ("Symbol" %in% colnames(featureData)) {
@@ -91,7 +110,7 @@ if (grepl('^GDS', argv$accession)) {
     gene.names   <- as.character(featureData[, "PLATE_ID"])
   } else {
     cat("ERROR: Bad dataset: Unable to find Symbol in the featureData object", file=stderr())
-    quit(save = "no", status = 2, runLast = FALSE)
+    quit(save = "no", status = 4, runLast = FALSE)
   }
   if ("Species Scientific Name" %in% colnames(featureData)) {
     organism     <- as.character(featureData[, "Species Scientific Name"][1])
@@ -99,11 +118,11 @@ if (grepl('^GDS', argv$accession)) {
     organism     <- as.character(featureData[, "Species"][1])
   } else {
     cat("ERROR: Bad dataset: Unable to find Species in the featureData object", file=stderr())
-    quit(save = "no", status = 3, runLast = FALSE)
+    quit(save = "no", status = 5, runLast = FALSE)
   }
 }
 
-X      <- exprs(eset) # Get Expression Data
+X           <- exprs(eset) # Get Expression Data
 pData       <- pData(eset)
 rownames(X) <- gene.names
 
@@ -123,7 +142,7 @@ tryCatch({
   X          <- imputation$data
 }, error=function(e) {
   cat("ERROR: Bad dataset: Unable to run KNN imputation on the dataset.", file=stderr())
-  quit(save = "no", status = 4, runLast = FALSE)
+  quit(save = "no", status = 6, runLast = FALSE)
 })
 
 # If not log transformed, do the log2 transformed
