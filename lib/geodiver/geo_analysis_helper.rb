@@ -55,7 +55,6 @@ module GeoDiver
         cmd = expression_cmd(run_dir, params)
         logger.debug("Running CMD: #{cmd}")
         system(cmd)
-        assert_expression_output
         run_dir
       end
 
@@ -64,7 +63,7 @@ module GeoDiver
         " --rundir '#{run_dir}/' --geneid '#{params[:gene_id]}'"
       end
 
-      def assert_expression_output(output_file)
+      def assert_interaction_output(output_file)
         return false if output_file.empty?
         output_file[0]
       end
@@ -80,7 +79,7 @@ module GeoDiver
           remove_unwanted_files(run_dir, params)
           output_file = Dir.glob(out_file)
         end
-        assert_expression_output(output_file)
+        assert_interaction_output(output_file)
       end
 
       def interaction_cmd(run_dir, params)
