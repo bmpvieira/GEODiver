@@ -61,7 +61,7 @@ module GeoDiver
         return addr if addr =~ /\A[a-z][a-z0-9\+\.\-]*:/i
         uri = [host = String.new]
         if absolute
-          host << "https://"
+          host << (GeoDiver.ssl? ? "https://" : "http://")
           if request.forwarded? or request.port != (request.secure? ? 443 : 80)
             host << request.host_with_port
           else
@@ -74,7 +74,9 @@ module GeoDiver
       end
 
       def base_url
-        @base_url ||= "#{request.env['rack.url_scheme']}://#{request.env['HTTP_HOST']}"
+        proxy = GeoDiver.ssl? ? 'https' : 'http'
+        puts proxy
+        @base_url ||= "#{proxy}://#{request.env['HTTP_HOST']}"
       end
     end
 

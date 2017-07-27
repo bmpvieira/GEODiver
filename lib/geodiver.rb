@@ -23,6 +23,10 @@ module GeoDiver
       File.dirname(File.dirname(__FILE__))
     end
 
+    def ssl?
+      @config[:ssl]
+    end
+
     def logger
       @logger ||= Logger.new(STDOUT)
     end

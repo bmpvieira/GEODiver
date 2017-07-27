@@ -75,6 +75,7 @@ module GeoDiver
         port: 9292,
         host: '0.0.0.0',
         gd_public_dir: File.join(Dir.home, '.geodiver/')
+        ssl: false
       }
     end
 
