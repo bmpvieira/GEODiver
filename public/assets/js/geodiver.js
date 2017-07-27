@@ -552,7 +552,7 @@ if (!GD) {
 
   GD.addGeoDbInfo = function (geoAccession) {
     var accession = geoAccession.toUpperCase();
-    var jsonFile = 'http://' + window.location.host + '/GeoDiver/DBs/' + accession + '.json';
+    var jsonFile = 'https://' + window.location.host + '/GeoDiver/DBs/' + accession + '.json';
     $.getJSON(jsonFile, function(json) {
       $('#dataset_accession').text(' ' + json.Accession);
       $('#dataset_title').text(json.Title);

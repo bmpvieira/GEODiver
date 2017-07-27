@@ -72,6 +72,10 @@ module GeoDiver
         uri << (addr ? addr : request.path_info).to_s
         File.join uri
       end
+
+      def base_url
+        @base_url ||= "#{request.env['rack.url_scheme']}://#{request.env['HTTP_HOST']}"
+      end
     end
 
     # For any request that hits the app, log incoming params at debug level.
