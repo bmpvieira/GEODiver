@@ -140,8 +140,7 @@ module GeoDiver
     # Run the GeoDiver Analysis
     post '/analyse' do
       email    = Base64.decode64(params[:user])
-      @results = GeoAnalysis.run(params, email, request.base_url,
-                                 session[:geodb])
+      @results = GeoAnalysis.run(params, email, base_url, session[:geodb])
       slim :results, layout: false
     end
 
