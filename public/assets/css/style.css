@@ -213,13 +213,8 @@ footer.page-footer {
 }
 
 #search_geo_dataset label {
-    width: 100%;
-    font-size: 0.8rem;
-    -webkit-transform: translateY(-140%);
-    -moz-transform: translateY(-140%);
-    -ms-transform: translateY(-140%);
-    -o-transform: translateY(-140%);
-    transform: translateY(-140%);
+  width: 100%;
+  font-size: 0.8rem;
 }
 
 
