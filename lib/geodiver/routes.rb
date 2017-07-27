@@ -44,6 +44,9 @@ module GeoDiver
                  provider_ignores_state: true
       end
 
+      # Force a secure https:// session
+      set :force_ssl, true
+
       # view directory will be found here.
       set :root, -> { GeoDiver.root }
 
