@@ -338,8 +338,6 @@ if (!GD) {
     var group1, group2, group1_name, group2_name, data, layout, parentWidth, PCAplotGd3, pcaPlot;
     group1_name = pcdata.group1[0];
     group2_name = pcdata.group2[0];
-    console.log(group1_name);
-    console.log(group2_name);
     group1 = { x: pcdata[ x + '.' + group1_name], y: pcdata[y + '.' + group1_name], text: pcdata.Group1, type: 'scatter', mode: 'markers', name: group1_name, marker: { symbol: 'circle' } };
     group2 = { x: pcdata[ x + '.' + group2_name], y: pcdata[y + '.' + group2_name], text: pcdata.Group2, type: 'scatter', mode: 'markers', name: group2_name, marker: { symbol: 'square' } };
     data = [group1, group2];
