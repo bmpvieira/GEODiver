@@ -75,7 +75,6 @@ module GeoDiver
 
       def base_url
         proxy = GeoDiver.ssl? ? 'https' : 'http'
-        puts proxy
         @base_url ||= "#{proxy}://#{request.env['HTTP_HOST']}"
       end
     end

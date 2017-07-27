@@ -116,7 +116,7 @@ if (!GD) {
 
   GD.exemplar_results = function() {
     $('#exemplar_result').click(function(){
-      $('input[name=geo_db]').val('GDS5093');
+      $('input[name=geo_db]').val('GDS724');
       $('#load_geo_db').submit();
     });
   };
