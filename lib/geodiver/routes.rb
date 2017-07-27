@@ -44,14 +44,31 @@ module GeoDiver
                  provider_ignores_state: true
       end
 
-      # Force a secure https:// session
-      set :force_ssl, true
-
       # view directory will be found here.
       set :root, -> { GeoDiver.root }
 
       # This is the full path to the public folder...
       set :public_folder, -> { GeoDiver.public_dir }
+    end
+
+    helpers do
+      # Generates the absolute URI for a given path in the app.
+      # Takes Rack routers and reverse proxies into account.
+      def uri(addr = nil, absolute = true, add_script_name = true)
+        return addr if addr =~ /\A[a-z][a-z0-9\+\.\-]*:/i
+        uri = [host = String.new]
+        if absolute
+          host << "https://"
+          if request.forwarded? or request.port != (request.secure? ? 443 : 80)
+            host << request.host_with_port
+          else
+            host << request.host
+          end
+        end
+        uri << request.script_name.to_s if add_script_name
+        uri << (addr ? addr : request.path_info).to_s
+        File.join uri
+      end
     end
 
     # For any request that hits the app, log incoming params at debug level.
