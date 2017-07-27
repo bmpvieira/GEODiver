@@ -1,4 +1,4 @@
-doctype html
+xdoctype html
 html lang="en"
   head
     meta content=("text/html; charset=UTF-8") http-equiv="Content-Type" /
@@ -172,7 +172,7 @@ html lang="en"
                 url: "/auth/google_oauth2/callback",
                 data: response,
                 success: function(data) {
-                  $(location).attr('href', 'http://' + window.location.host + '/analyse');
+                  $(location).attr('href', 'https://' + window.location.host + '/analyse');
                 }
               });
             } else {

@@ -748,10 +748,11 @@ if (!GD) {
             data: response,
             success: function() {
               // TODO - just update the DOM instead of a redirect
-              $(location).attr('href', 'http://' + window.location.host + '/analyse');
+              $(location).attr('href', 'https://' + window.location.host + '/analyse');
             }
           });
         } else {
+          console.log('ERROR Response google authentication failed');
           // TODO: ERROR Response google authentication failed
         }
       });
