@@ -52,6 +52,9 @@ module GeoDiver
     end
 
     helpers do
+      # Overide default URI helper method - to hardcode a https://
+      # In our setup, we are running passenger on http:// (not secure) and then
+      # reverse proxying that onto a 443 port (i.e. https://)
       # Generates the absolute URI for a given path in the app.
       # Takes Rack routers and reverse proxies into account.
       def uri(addr = nil, absolute = true, add_script_name = true)
